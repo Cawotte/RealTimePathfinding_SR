@@ -15,6 +15,10 @@ public class Node {
         this.neighbors = neighbors;
     }
 
+    public void addNeighbhor(Node node) {
+        neighbors.add(node);
+    }
+
     public float getCost() {
         return cost;
     }
