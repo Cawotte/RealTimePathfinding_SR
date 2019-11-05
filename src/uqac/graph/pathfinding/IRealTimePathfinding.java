@@ -5,7 +5,7 @@ import uqac.graph.Node;
 public interface IRealTimePathfinding {
 
     //Classic Pathfinding
-    Path computeFullPath(Node start, Node goal);
+    Path computeFullPath(Node start, Node goal) throws PathNotFoundException;
 
     //Real Time Pathfinding
     void beginPathfinding(Node start, Node goal);

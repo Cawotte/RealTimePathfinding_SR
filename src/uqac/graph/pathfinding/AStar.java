@@ -4,21 +4,26 @@ import uqac.graph.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.function.BiFunction;
 
-public class AStar implements IPathfinding {
+public class AStar implements IRealTimePathfinding {
 
     //TODO : Improve algo with sorting by ascending F
     //TODO : Add Logs
 
     private BiFunction<Node, Node, Float> heuristic;
+
     private Path path = new Path(false);
+    private Iterator<Node> iterator = null;
 
     public AStar(BiFunction<Node, Node, Float> heuristic) {
         this.heuristic = heuristic;
     }
 
-    public Path getPath(Node startNode, Node goalNode) throws PathNotFoundException {
+    @Override
+    public Path computeFullPath(Node startNode, Node goalNode) throws PathNotFoundException
+    {
 
         NodeAStar start = new NodeAStar(startNode);
         NodeAStar goal = new NodeAStar(goalNode);
@@ -64,7 +69,7 @@ public class AStar implements IPathfinding {
             }
 
             //get neighbors
-            ArrayList<Node> neighbors = getValidNeighbors(current);
+            ArrayList<Node> neighbors = current.node.getNeighbors();
 
             for (Node neigh : neighbors) {
 
@@ -103,10 +108,34 @@ public class AStar implements IPathfinding {
         throw new PathNotFoundException(startNode, goalNode);
     }
 
-    private ArrayList<Node> getValidNeighbors(NodeAStar node) {
+    @Override
+    public void beginPathfinding(Node start, Node goal) {
 
-        return node.node.getNeighbors();
+        Path path = getFinalPath();
+
+        iterator = path.getNodePath().iterator();
+
     }
+
+    @Override
+    public Node getNextStep() {
+
+        if (iterator.hasNext()) {
+            return iterator.next();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean hasFinished() {
+        return !iterator.hasNext();
+    }
+
+    @Override
+    public Path getFinalPath() {
+        return path;
+    }
+
 
     private NodeAStar getNodeWithMinF(HashSet<NodeAStar> openSet) {
         NodeAStar bestNode = null;

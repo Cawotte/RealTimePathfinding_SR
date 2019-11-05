@@ -10,10 +10,9 @@ public class WeightedGraph {
 
     boolean isDirected = true;
 
-    /*
-        hashthable.putIfAbsent return null if it was absent
-        hashtable.get returns null if it was absent
-     */
+    public WeightedGraph() {
+
+    }
 
     public void addNode(Node node) {
 

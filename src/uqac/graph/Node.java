@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Hashtable;
 
 /**
- * Interface représentant un noeud pour graph à poids
+ * Noeud de graph à poids
  */
 public class Node {
 
