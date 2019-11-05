@@ -1,29 +1,38 @@
 package uqac.graph;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Hashtable;
 
 /**
- * Interface représentant un noeud, tout les noeuds doivent l'implémenter.
+ * Interface représentant un noeud pour graph à poids
  */
 public class Node {
 
-    private float cost;
-    private ArrayList<Node> neighbors;
+    private Hashtable<Node, Float> neighbors;
 
-    public Node(float cost, ArrayList<Node> neighbors) {
-        this.cost = cost;
+    public Node() {
+
+    }
+
+    public Node(Hashtable<Node, Float> neighbors) {
         this.neighbors = neighbors;
     }
 
-    public void addNeighbhor(Node node) {
-        neighbors.add(node);
+    public void addNeighbor(Node node, float cost) {
+        neighbors.put(node, cost);
     }
 
-    public float getCost() {
-        return cost;
+    public boolean hasNeighbor(Node neighbor) {
+        return neighbors.containsKey(neighbor);
+    }
+
+    public float getCostToNeighbor(Node neighbor) {
+        return neighbors.get(neighbor);
     }
 
     public ArrayList<Node> getNeighbors() {
-        return neighbors;
+        return Collections.list(neighbors.keys());
     }
 }

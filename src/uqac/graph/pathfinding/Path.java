@@ -35,20 +35,31 @@ public class Path {
     }
 
     public void addNode(Node node) {
+        if (!path.isEmpty()) {
+            //Add the cost from the NEW node TO the PREVIOUS node.
+            cost += path.get(1).getCostToNeighbor(node);
+        }
         path.add(node);
-        cost += node.getCost();
     }
 
     public void addNodeAtBegin(Node node) {
+        if (!path.isEmpty()) {
+            //Add the cost from the NEW node TO the PREVIOUS node.
+            cost += node.getCostToNeighbor(path.get(1));
+        }
         path.add(0, node);
-        cost += node.getCost();
     }
 
     public boolean removeLast() {
 
         if (!path.isEmpty()) {
             Node toRemove = getGoal(); //Goal is last, even if not completed
-            cost -= toRemove.getCost();
+
+            //If there's currently at least two nodes
+            if (path.size() > 1) {
+                //Remove the cost from the previous one to the one to be removed.
+                cost -= path.get(path.size() - 2).getCostToNeighbor(toRemove);
+            }
 
             return path.remove(toRemove);
         }
@@ -60,7 +71,7 @@ public class Path {
      * Get the path suboptimality compared to the given optimal path in %.
      * An optimal path has a suboptimality of 0.
      * A path twice as long has a suboptimality of 200%.
-     * @param otherPath
+     * @param optimalPath
      * @return
      */
     public float compareSuboptimality(Path optimalPath) {

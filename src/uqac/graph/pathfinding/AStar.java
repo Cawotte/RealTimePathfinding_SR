@@ -34,7 +34,7 @@ public class AStar implements IPathfinding {
 
         HashSet<NodeAStar> closedSet = new HashSet<>();
         HashSet<NodeAStar> openSet = new HashSet<>();
-        int g = 0;
+        float g = 0f;
 
         openSet.add(start);
 
@@ -65,7 +65,6 @@ public class AStar implements IPathfinding {
 
             //get neighbors
             ArrayList<Node> neighbors = getValidNeighbors(current);
-            g++;
 
             for (Node neigh : neighbors) {
 
@@ -74,6 +73,8 @@ public class AStar implements IPathfinding {
                 //if this neighbor is already in the closed list, ignore it
                 if (closedSet.contains(neighbor))
                     continue;
+
+                g = current.GScore + current.node.getCostToNeighbor(neighbor.node);
 
                 // if it's not in the open list...
                 if (!openSet.contains(neighbor))
