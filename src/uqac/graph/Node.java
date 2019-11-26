@@ -29,6 +29,7 @@ public class Node {
      * @param cost
      */
     public void addNeighbor(Node node, float cost) {
+
         neighbors.put(node, cost);
     }
 

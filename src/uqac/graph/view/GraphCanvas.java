@@ -11,7 +11,7 @@ public class GraphCanvas extends JPanel {
     public boolean drawLinks = true;
 
     private final int nodeRadius = 10;
-    private final Color colorPath = Color.blue;
+    private final Color colorPath = Color.red;
     private final Color colorGraph = Color.gray;
 
 
@@ -38,7 +38,7 @@ public class GraphCanvas extends JPanel {
         paintBaseGraph(g);
         pointer.draw(g);
 
-        drawLineToClosestNode(g);
+        //drawLineToClosestNode(g);
 
         if (path != null) {
             paintPath(g, path);
@@ -78,6 +78,8 @@ public class GraphCanvas extends JPanel {
             if (previousNode != null) {
                 drawLine(g, previousNode.position, node.position, colorPath);
             }
+
+            drawCircle(g, node.position, nodeRadius, colorPath);
 
             previousNode = node;
         }

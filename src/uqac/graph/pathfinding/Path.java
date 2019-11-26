@@ -35,17 +35,17 @@ public class Path {
     }
 
     public void addNode(Node node) {
-        if (path.size() > 1) {
+        if (!path.isEmpty()) {
             //Add the cost from the NEW node TO the PREVIOUS node.
-            cost += path.get(1).getCostToNeighbor(node);
+            cost += path.get(0).getCostToNeighbor(node);
         }
         path.add(node);
     }
 
-    public void addNodeAtBegin(Node node) {
-        if (path.size() > 1) {
+    public void addNodeAtBeginning(Node node) {
+        if (!path.isEmpty()) {
             //Add the cost from the NEW node TO the PREVIOUS node.
-            cost += node.getCostToNeighbor(path.get(1));
+            cost += node.getCostToNeighbor(path.get(0));
         }
         path.add(0, node);
     }

@@ -56,10 +56,10 @@ public class AStar implements IRealTimePathfinding {
 
                 goal.parent = current.parent;
 
-                path.addNodeAtBegin(goal.node);
+                path.addNodeAtBeginning(goal.node);
 
                 while (current.parent != null) {
-                    path.addNodeAtBegin(current.parent.node);
+                    path.addNodeAtBeginning(current.parent.node);
                     current = current.parent;
                 }
 

@@ -1,7 +1,7 @@
 package uqac.graph.view;
 
 
-import uqac.graph.Node;
+import uqac.graph.*;
 import uqac.graph.Vector2;
 import uqac.graph.WeightedGraph;
 import uqac.graph.pathfinding.AStar;
@@ -26,16 +26,21 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     private WeightedGraph graph;
     private PathCalculator pathfinder;
 
+
     public Main() {
 
         //DATA
-        this.graph = GraphFactory.generateGridGraph(CANVAS_WIDTH, CANVAS_HEIGHT, AVERAGE_DIST_BETWEEN_NODES,
-                0.5f, 0.5f);
+        this.graph = GraphFactory.generateGridGraph(
+                CANVAS_WIDTH, CANVAS_HEIGHT,
+                AVERAGE_DIST_BETWEEN_NODES,
+                new Vector2(50, 50),
+                new Vector2(0.5f, 0.5f));
 
         this.pathfinder = new PathCalculator(graph, new AStar(this::euclidianDistance));
         this.pathfinder.notifyObserver = new Runnable() {
             @Override
             public void run() {
+                canvas.setPath(pathfinder.getPathFound());
                 repaintGraph();
             }
         };
@@ -66,12 +71,13 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     }
 
     private void repaintGraph() {
-        canvas.setPath(pathfinder.getPathFound());
         this.repaint();
     }
 
     public static void main(String[] args) {
+
         // Run the GUI codes on the Event-Dispatching thread for thread safety
+
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
