@@ -38,12 +38,16 @@ public class GraphCanvas extends JPanel {
         paintBaseGraph(g);
         pointer.draw(g);
 
-        Node closestNode = drawLineToClosestNode(g);
+        drawLineToClosestNode(g);
 
         if (path != null) {
             paintPath(g, path);
         }
 
+    }
+
+    public void setPath(Path path) {
+        this.path = path;
     }
 
     private void paintBaseGraph(Graphics g) {

@@ -35,7 +35,7 @@ public class Path {
     }
 
     public void addNode(Node node) {
-        if (!path.isEmpty()) {
+        if (path.size() > 1) {
             //Add the cost from the NEW node TO the PREVIOUS node.
             cost += path.get(1).getCostToNeighbor(node);
         }
@@ -43,7 +43,7 @@ public class Path {
     }
 
     public void addNodeAtBegin(Node node) {
-        if (!path.isEmpty()) {
+        if (path.size() > 1) {
             //Add the cost from the NEW node TO the PREVIOUS node.
             cost += node.getCostToNeighbor(path.get(1));
         }

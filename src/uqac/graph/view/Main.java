@@ -1,8 +1,11 @@
 package uqac.graph.view;
 
 
-import model.MeshNetwork;
-import model.MeshNetworkDisruptor;
+import uqac.graph.Node;
+import uqac.graph.Vector2;
+import uqac.graph.WeightedGraph;
+import uqac.graph.pathfinding.AStar;
+import uqac.graph.pathfinding.GraphFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,21 +23,26 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
     private GraphCanvas canvas;
 
+    private WeightedGraph graph;
+    private PathCalculator pathfinder;
+
     public Main() {
 
         //DATA
-        this.meshNetwork = new MeshNetwork(CANVAS_WIDTH, CANVAS_HEIGHT, AVERAGE_DIST_BETWEEN_NODES);
+        this.graph = GraphFactory.generateGridGraph(CANVAS_WIDTH, CANVAS_HEIGHT, AVERAGE_DIST_BETWEEN_NODES,
+                0.5f, 0.5f);
 
-        this.meshNetworkDisruptor = new MeshNetworkDisruptor(meshNetwork);
-        this.meshNetworkDisruptor.notifyObserver = new Runnable() {
+        this.pathfinder = new PathCalculator(graph, new AStar(this::euclidianDistance));
+        this.pathfinder.notifyObserver = new Runnable() {
             @Override
             public void run() {
                 repaintGraph();
             }
         };
-        this.meshNetworkDisruptor.startRecurrentDisabling();
 
-        canvas = new GraphCanvas(meshNetwork, CANVAS_WIDTH, CANVAS_HEIGHT);
+        pathfinder.startRecurrentPathfinding();
+
+        canvas = new GraphCanvas(graph, CANVAS_WIDTH, CANVAS_HEIGHT);
         canvas.drawLinks = DRAW_LINKS;
         // Construct the drawing canvas
         canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
@@ -53,8 +61,12 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
         setVisible(true);    // "super" JFrame show
     }
 
+    private float euclidianDistance(Node a, Node b) {
+        return Vector2.Distance(a.position, b.position);
+    }
 
     private void repaintGraph() {
+        canvas.setPath(pathfinder.getPathFound());
         this.repaint();
     }
 

@@ -39,7 +39,7 @@ public class AStar implements IRealTimePathfinding {
 
         HashSet<NodeAStar> closedSet = new HashSet<>();
         HashSet<NodeAStar> openSet = new HashSet<>();
-        float g = 0f;
+        float g;
 
         openSet.add(start);
 

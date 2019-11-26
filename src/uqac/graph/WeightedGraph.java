@@ -1,18 +1,26 @@
 package uqac.graph;
 
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
 
 public class WeightedGraph {
 
     //Adjacency list
 
-    HashSet<Node> nodes = new HashSet<>();
+    private HashSet<Node> nodes = new HashSet<>();
 
-    boolean isDirected = true;
+    private boolean isDirected;
 
     public WeightedGraph() {
+        this.isDirected = false;
+    }
 
+    public WeightedGraph(boolean isDirected) {
+        this.isDirected = isDirected;
+    }
+
+    public WeightedGraph(boolean isDirected, Collection<Node> nodes) {
+        this.isDirected = isDirected;
+        this.nodes = new HashSet<>(nodes);
     }
 
     public void addNode(Node node) {
@@ -34,6 +42,19 @@ public class WeightedGraph {
             destination.addNeighbor(source, cost);
         }
 
+    }
+
+    public Node getRandomNode() {
+
+        Random rand = new Random();
+
+        int index = rand.nextInt(nodes.size());
+        Iterator<Node> iter = nodes.iterator();
+        for (int i = 0; i < index; i++) {
+            iter.next();
+        }
+
+        return iter.next();
     }
 
     public Node getClosestNode(Vector2 pos) {

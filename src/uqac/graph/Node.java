@@ -12,18 +12,34 @@ public class Node {
 
     public Vector2 position;
 
-    private Hashtable<Node, Float> neighbors;
+    private Hashtable<Node, Float> neighbors = new Hashtable<>();
 
-    public Node() {
-
+    public Node(float x, float y) {
+        this.position = new Vector2(x,y);
     }
 
     public Node(Hashtable<Node, Float> neighbors) {
         this.neighbors = neighbors;
     }
 
+    /***
+     * Add the node as a neighbor of the current node,
+     * with the given cost to travel between them.
+     * @param node
+     * @param cost
+     */
     public void addNeighbor(Node node, float cost) {
         neighbors.put(node, cost);
+    }
+
+    /**
+     * Add the node as a neighbor of the current node.
+     * Use the Euclidian distance for the cost.
+     * @param node
+     */
+    public void addNeighbor(Node node) {
+        float cost = Vector2.Distance(position, node.position);
+        addNeighbor(node, cost);
     }
 
     public boolean hasNeighbor(Node neighbor) {
