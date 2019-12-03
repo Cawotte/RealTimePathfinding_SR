@@ -1,6 +1,7 @@
 package uqac.graph.pathfinding;
 
 import uqac.graph.Node;
+import uqac.graph.pathfinding.logs.LogPathfinding;
 
 import java.util.ArrayList;
 

@@ -1,6 +1,11 @@
 package uqac.graph.pathfinding;
 
+import uqac.graph.INode;
 import uqac.graph.Node;
+import uqac.graph.pathfinding.logs.LogPathfinding;
+
+import java.util.Collection;
+import java.util.List;
 
 public interface IRealTimePathfinding {
 
@@ -14,9 +19,12 @@ public interface IRealTimePathfinding {
 
     boolean hasFinished();
 
-    Path getFinalPath();
+    Path getPath();
+
+    Collection<? extends INode> getVisited();
 
     //Get Logs
-
+    LogPathfinding getLog();
 
 }
+

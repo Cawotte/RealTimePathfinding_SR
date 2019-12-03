@@ -15,8 +15,9 @@ public class PathCalculator {
     private IRealTimePathfinding pathfindingAlgorithm;
     private Path pathFound;
 
-    private float frequencyRandomPathCalculator = 3f;
+    private long minTimePathfinding = 2000L;
 
+    private float frequencyRandomPathCalculator = 2f;
 
     public Runnable notifyObserver;
 
@@ -34,13 +35,33 @@ public class PathCalculator {
         TimerTask recurringPathfinding = new TimerComputePathfinding();
             //repeat
         timer.schedule(recurringPathfinding,
-                (int)frequencyRandomPathCalculator * 1000,
+                0,
                 (int)frequencyRandomPathCalculator * 1000);
 
     }
 
-    public Path getPathFound() {
+    private void startRealTimePathfinding(Node start, Node goal) {
+
+        pathfindingAlgorithm.beginPathfinding(start, goal);
+
+        while (!pathfindingAlgorithm.hasFinished()) {
+            Node nextMove = pathfindingAlgorithm.getNextStep();
+
+            notifyObserver.run();
+        }
+
+        notifyObserver.run();
+
+        System.out.println(pathfindingAlgorithm.getLog().toString());
+    }
+
+
+    public Path getPath() {
         return pathFound;
+    }
+
+    public IRealTimePathfinding getPathfindingAlgorithm() {
+        return pathfindingAlgorithm;
     }
 
 
@@ -49,7 +70,6 @@ public class PathCalculator {
         public void run() {
             try {
 
-                //Get a random node to disable
                 Node randomNode1 = graph.getRandomNode();
                 Node randomNode2 = graph.getRandomNode();
 
@@ -57,6 +77,7 @@ public class PathCalculator {
 
                 pathFound = pathfindingAlgorithm.computeFullPath(randomNode1, randomNode2);
 
+                System.out.println(pathfindingAlgorithm.getLog().toString());
                 notifyObserver.run();
 
             } catch (Exception ex) {

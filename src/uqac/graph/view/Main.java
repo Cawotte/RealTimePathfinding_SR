@@ -6,6 +6,7 @@ import uqac.graph.Vector2;
 import uqac.graph.WeightedGraph;
 import uqac.graph.pathfinding.AStar;
 import uqac.graph.pathfinding.GraphFactory;
+import uqac.graph.pathfinding.Heuristics;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,8 +20,10 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     static final int CANVAS_WIDTH  = 960;
     static final int CANVAS_HEIGHT = 600;
     static final boolean DRAW_LINKS = true;
-    static final int AVERAGE_DIST_BETWEEN_NODES = 60;
+    static final int AVERAGE_DIST_BETWEEN_NODES = 3;
 
+    static final Vector2 GRAPH_OFFSET = new Vector2(50, 50);
+    static final Vector2 RAND_OFFSET = new Vector2(0.f, 0.f); //coeff
     private GraphCanvas canvas;
 
     private WeightedGraph graph;
@@ -33,14 +36,15 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
         this.graph = GraphFactory.generateGridGraph(
                 CANVAS_WIDTH, CANVAS_HEIGHT,
                 AVERAGE_DIST_BETWEEN_NODES,
-                new Vector2(50, 50),
-                new Vector2(0.5f, 0.5f));
+                GRAPH_OFFSET,
+                RAND_OFFSET);
 
-        this.pathfinder = new PathCalculator(graph, new AStar(this::euclidianDistance));
+        this.pathfinder = new PathCalculator(graph, new AStar(Heuristics::euclidianDistance));
         this.pathfinder.notifyObserver = new Runnable() {
             @Override
             public void run() {
-                canvas.setPath(pathfinder.getPathFound());
+                canvas.setPath(pathfinder.getPathfindingAlgorithm().getPath());
+                canvas.setVisited(pathfinder.getPathfindingAlgorithm().getVisited());
                 repaintGraph();
             }
         };
@@ -62,12 +66,8 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);   // Handle the CLOSE button
         pack();              // Either pack() the components; or setSize()
-        setTitle("MeshNetworkDemo");  // "super" JFrame sets the title
+        setTitle("Real Time Pathfinding");  // "super" JFrame sets the title
         setVisible(true);    // "super" JFrame show
-    }
-
-    private float euclidianDistance(Node a, Node b) {
-        return Vector2.Distance(a.position, b.position);
     }
 
     private void repaintGraph() {

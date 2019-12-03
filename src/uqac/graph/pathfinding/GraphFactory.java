@@ -12,8 +12,8 @@ public class GraphFactory {
 
         //Create a 2D array of Node, then convert it to an actual Graph object.
 
-        int nbNodeWidth = (width - (int)graphOffset.x) / distanceBetweenNodes;
-        int nbNodeHeight = (height - (int)graphOffset.y) / distanceBetweenNodes;
+        int nbNodeWidth = (width - (int)graphOffset.x * 2) / distanceBetweenNodes;
+        int nbNodeHeight = (height - (int)graphOffset.y * 2) / distanceBetweenNodes;
 
         int offsetNodeX = (int)(distanceBetweenNodes * randOffset.x);
         int offsetNodeY = (int)(distanceBetweenNodes * randOffset.y);

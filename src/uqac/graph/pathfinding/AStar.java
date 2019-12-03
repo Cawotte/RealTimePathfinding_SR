@@ -1,8 +1,10 @@
 package uqac.graph.pathfinding;
 
 import uqac.graph.*;
+import uqac.graph.pathfinding.logs.LogPathfinding;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.function.BiFunction;
@@ -17,6 +19,11 @@ public class AStar implements IRealTimePathfinding {
     private Path path = new Path(false);
     private Iterator<Node> iterator = null;
 
+    private LogPathfinding log = new LogPathfinding();
+
+
+    HashSet<NodeAStar> closedSet = new HashSet<>();
+
     public AStar(BiFunction<Node, Node, Float> heuristic) {
         this.heuristic = heuristic;
     }
@@ -24,6 +31,7 @@ public class AStar implements IRealTimePathfinding {
     @Override
     public Path computeFullPath(Node startNode, Node goalNode) throws PathNotFoundException
     {
+        log.startLogging();
 
         NodeAStar start = new NodeAStar(startNode);
         NodeAStar goal = new NodeAStar(goalNode);
@@ -34,10 +42,11 @@ public class AStar implements IRealTimePathfinding {
 
         if (start.equals(goal)) {
             path.setCompleted(true);
+            log.finishLogging(path);
             return path;
         }
 
-        HashSet<NodeAStar> closedSet = new HashSet<>();
+        closedSet = new HashSet<>();
         HashSet<NodeAStar> openSet = new HashSet<>();
         float g;
 
@@ -64,6 +73,7 @@ public class AStar implements IRealTimePathfinding {
                 }
 
                 path.setCompleted(true);
+                log.finishLogging(path);
 
                 return path;
             }
@@ -105,13 +115,22 @@ public class AStar implements IRealTimePathfinding {
             }
         }
 
+        log.finishLogging(path);
+
         throw new PathNotFoundException(startNode, goalNode);
     }
 
     @Override
     public void beginPathfinding(Node start, Node goal) {
 
-        Path path = getFinalPath();
+
+        try {
+            path = computeFullPath(start, goal);
+        }
+        catch (PathNotFoundException err) {
+            System.out.println("AStar : Path not found!");
+            return;
+        }
 
         iterator = path.getNodePath().iterator();
 
@@ -132,10 +151,19 @@ public class AStar implements IRealTimePathfinding {
     }
 
     @Override
-    public Path getFinalPath() {
+    public Path getPath() {
         return path;
     }
 
+    @Override
+    public LogPathfinding getLog() {
+        return log;
+    }
+
+    @Override
+    public Collection<? extends INode> getVisited() {
+        return closedSet;
+    }
 
     private NodeAStar getNodeWithMinF(HashSet<NodeAStar> openSet) {
         NodeAStar bestNode = null;
@@ -156,7 +184,7 @@ public class AStar implements IRealTimePathfinding {
         return bestNode;
     }
 
-    private static class NodeAStar {
+    private static class NodeAStar implements INode {
 
         Node node;
         NodeAStar parent;
@@ -191,6 +219,11 @@ public class AStar implements IRealTimePathfinding {
         @Override
         public int hashCode() {
             return node.hashCode();
+        }
+
+        @Override
+        public Vector2 getPosition() {
+            return node.position;
         }
     }
 }

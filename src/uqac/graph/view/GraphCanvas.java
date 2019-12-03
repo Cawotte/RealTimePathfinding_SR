@@ -5,15 +5,19 @@ import uqac.graph.pathfinding.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Collection;
+import java.util.HashSet;
 
 public class GraphCanvas extends JPanel {
 
     public boolean drawLinks = true;
 
-    private final int nodeRadius = 10;
+    private final int nodeRadius = 2;
     private final Color colorPath = Color.red;
     private final Color colorGraph = Color.gray;
 
+    private final Color colorVisited = Color.orange;
+    private final Color colorStartNode = Color.blue;
 
     private final Color colorShortDistance = Color.blue;
 
@@ -21,6 +25,8 @@ public class GraphCanvas extends JPanel {
 
     private int width;
     private int height;
+
+    private Collection<? extends INode> visited = null;
 
     private Circle pointer = new Circle(0, 0, 5, Color.red);
 
@@ -38,6 +44,8 @@ public class GraphCanvas extends JPanel {
         paintBaseGraph(g);
         pointer.draw(g);
 
+        paintVisited(g);
+
         //drawLineToClosestNode(g);
 
         if (path != null) {
@@ -50,6 +58,9 @@ public class GraphCanvas extends JPanel {
         this.path = path;
     }
 
+    public void setVisited(Collection<? extends INode> visited) {
+        this.visited = visited;
+    }
     private void paintBaseGraph(Graphics g) {
 
         //Draw all nodes
@@ -59,6 +70,15 @@ public class GraphCanvas extends JPanel {
 
         if (drawLinks)
             drawLink(g);
+    }
+
+    private void paintVisited(Graphics g) {
+        if (visited == null)
+            return;
+
+        for (INode visitedNode : visited) {
+            drawCircle(g, visitedNode.getPosition(), nodeRadius, colorVisited);
+        }
     }
 
 
@@ -79,7 +99,13 @@ public class GraphCanvas extends JPanel {
                 drawLine(g, previousNode.position, node.position, colorPath);
             }
 
-            drawCircle(g, node.position, nodeRadius, colorPath);
+            //if not first node
+            if (previousNode != null)  {
+                drawCircle(g, node.position, nodeRadius, colorPath);
+            }
+            else {
+                drawCircle(g, node.position, nodeRadius * 2, colorStartNode);
+            }
 
             previousNode = node;
         }
