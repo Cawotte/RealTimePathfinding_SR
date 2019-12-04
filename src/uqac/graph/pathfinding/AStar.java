@@ -45,17 +45,31 @@ public class AStar implements IRealTimePathfinding {
         }
 
         closedSet = new HashSet<>();
-        /*
+
+        /**
+         * PriorityQueue
+         * On donne une fonction de comparaison, et va pick celui avec la priorité
+         * la plus élevé dès qu'on veut prendre un objet dans la collection.
+         *
+         * Ici, on prend le Node avec le F le plus grand, et en cas d'égalités,
+         * tranche avec le H le plus grand.
+         */
         PriorityQueue<NodeAStar> openSet = new PriorityQueue<NodeAStar>(
                 new Comparator<NodeAStar>() {
                     @Override
                     public int compare(NodeAStar node0, NodeAStar node1) {
-                        return Float.compare(node0.getFScore(), node1.getFScore());
+                        int comp = Float.compare(node0.getFScore(), node1.getFScore());
+
+                        //comp = 0 si les F sont égaux
+                        if (comp == 0)
+                            return Float.compare(node0.HScore, node1.HScore);
+                        else {
+                            return comp;
+                        }
                     }
-                }); */
+                });
 
 
-        HashSet<NodeAStar> openSet = new HashSet<>();
 
         float g;
 
@@ -66,12 +80,11 @@ public class AStar implements IRealTimePathfinding {
 
         while (openSet.size() > 0) {
 
-            current = getNodeWithMinF(openSet);
+            current = openSet.poll();
 
-            System.out.println("CHOSEN : " + current.toString());
+            //System.out.println("CHOSEN : " + current.toString());
 
             closedSet.add(current);
-            openSet.remove(current);
 
             //Goal is found, time to build the final path!
             if (current.equals(goal)) {
@@ -114,7 +127,8 @@ public class AStar implements IRealTimePathfinding {
 
                     // and add it to the open list
                     openSet.add(neighbor);
-                    System.out.println("ADDED : " + neighbor.toString());
+
+                    //System.out.println("ADDED : " + neighbor.toString());
                 }
                 else
                 {

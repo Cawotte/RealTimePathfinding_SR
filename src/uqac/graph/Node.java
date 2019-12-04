@@ -11,8 +11,6 @@ import java.util.Objects;
  */
 public class Node {
 
-    private static long uniqueIndex = 0;
-    private long index;
 
     public Vector2 position;
 
@@ -21,7 +19,6 @@ public class Node {
     public Node(float x, float y) {
 
         this.position = new Vector2(x,y);
-        this.index = uniqueIndex++;
     }
 
 
@@ -83,11 +80,11 @@ public class Node {
         }
         Node otherNode = (Node)o;
 
-        return index == otherNode.index;
+        return position.equals(otherNode.position);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(index);
+        return position.hashCode();
     }
 }
