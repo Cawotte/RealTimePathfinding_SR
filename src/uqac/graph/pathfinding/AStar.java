@@ -3,10 +3,8 @@ package uqac.graph.pathfinding;
 import uqac.graph.*;
 import uqac.graph.pathfinding.logs.LogPathfinding;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.text.DecimalFormat;
+import java.util.*;
 import java.util.function.BiFunction;
 
 public class AStar implements IRealTimePathfinding {
@@ -47,15 +45,30 @@ public class AStar implements IRealTimePathfinding {
         }
 
         closedSet = new HashSet<>();
+        /*
+        PriorityQueue<NodeAStar> openSet = new PriorityQueue<NodeAStar>(
+                new Comparator<NodeAStar>() {
+                    @Override
+                    public int compare(NodeAStar node0, NodeAStar node1) {
+                        return Float.compare(node0.getFScore(), node1.getFScore());
+                    }
+                }); */
+
+
         HashSet<NodeAStar> openSet = new HashSet<>();
+
         float g;
 
+        start.GScore = 0f;
+        start.HScore = heuristic.apply(start.node, goal.node);
         openSet.add(start);
 
 
         while (openSet.size() > 0) {
 
             current = getNodeWithMinF(openSet);
+
+            System.out.println("CHOSEN : " + current.toString());
 
             closedSet.add(current);
             openSet.remove(current);
@@ -96,11 +109,12 @@ public class AStar implements IRealTimePathfinding {
                 {
                     // compute its scores, set the parent
                     neighbor.GScore = g;
-                    neighbor.HScore = heuristic.apply(current.node, goal.node);
+                    neighbor.HScore = heuristic.apply(neighbor.node, goal.node);
                     neighbor.parent = current;
 
                     // and add it to the open list
                     openSet.add(neighbor);
+                    System.out.println("ADDED : " + neighbor.toString());
                 }
                 else
                 {
@@ -167,7 +181,8 @@ public class AStar implements IRealTimePathfinding {
 
     private NodeAStar getNodeWithMinF(HashSet<NodeAStar> openSet) {
         NodeAStar bestNode = null;
-        float minF = 0f;
+        float minF = Float.MAX_VALUE;
+        ArrayList<NodeAStar> equalsF = new ArrayList<>();
 
         for (NodeAStar node : openSet) {
             if (bestNode == null) {
@@ -178,6 +193,21 @@ public class AStar implements IRealTimePathfinding {
             if (node.getFScore() < minF) {
                 bestNode = node;
                 minF = node.getFScore();
+
+                equalsF = new ArrayList<>();
+                equalsF.add(bestNode);
+            }
+            else if (node.getFScore() == minF) {
+
+                equalsF.add(node);
+            }
+        }
+
+        float minH = Float.MAX_VALUE;
+        for (NodeAStar node : equalsF) {
+            if (node.HScore < minH) {
+                bestNode = node;
+                minH = node.HScore;
             }
         }
 
@@ -214,6 +244,17 @@ public class AStar implements IRealTimePathfinding {
             NodeAStar otherNode = (NodeAStar)obj;
 
             return node.equals(otherNode.node);
+        }
+
+        @Override
+        public String toString() {
+
+            DecimalFormat df = new DecimalFormat("0.00");
+
+            String str = "";
+            str += "(" + df.format(getPosition().x) + ", " + df.format(getPosition().y) + ")";
+            str += ", (" + GScore + ", " + HScore + ", " + getFScore() + ")";
+            return str;
         }
 
         @Override

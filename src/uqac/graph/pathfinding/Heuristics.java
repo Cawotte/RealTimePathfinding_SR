@@ -10,5 +10,9 @@ public class Heuristics {
         return Vector2.Distance(a.position, b.position);
     }
 
+    public static float manhattanDistance(Node a, Node b) {
+        return Math.abs(a.position.x - b.position.x) + Math.abs(a.position.y - b.position.y);
+    }
+
 
 }

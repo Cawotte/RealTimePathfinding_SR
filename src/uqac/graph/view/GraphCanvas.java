@@ -6,13 +6,12 @@ import uqac.graph.pathfinding.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Collection;
-import java.util.HashSet;
 
 public class GraphCanvas extends JPanel {
 
-    public boolean drawLinks = true;
+    public boolean drawLinks = false;
 
-    private final int nodeRadius = 2;
+    private final int nodeRadius = 8;
     private final Color colorPath = Color.red;
     private final Color colorGraph = Color.gray;
 
@@ -25,6 +24,8 @@ public class GraphCanvas extends JPanel {
 
     private int width;
     private int height;
+    private Vector2 min;
+    private Vector2 max;
 
     private Collection<? extends INode> visited = null;
 

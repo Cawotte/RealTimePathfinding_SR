@@ -34,7 +34,8 @@ public class Vector2 {
         }
 
         Vector2 otherPos = (Vector2)o;
-        return (x == otherPos.x && y == otherPos.y);
+        return (Vector2.Distance(this, otherPos) < 0.001f);
+        //return (x == otherPos.x && y == otherPos.y);
     }
 
     @Override

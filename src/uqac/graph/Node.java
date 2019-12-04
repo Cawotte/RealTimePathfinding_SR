@@ -4,23 +4,26 @@ package uqac.graph;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Objects;
 
 /**
  * Noeud de graph à poids
  */
 public class Node {
 
+    private static long uniqueIndex = 0;
+    private long index;
+
     public Vector2 position;
 
     private Hashtable<Node, Float> neighbors = new Hashtable<>();
 
     public Node(float x, float y) {
+
         this.position = new Vector2(x,y);
+        this.index = uniqueIndex++;
     }
 
-    public Node(Hashtable<Node, Float> neighbors) {
-        this.neighbors = neighbors;
-    }
 
     /***
      * Add the node as a neighbor of the current node,
@@ -41,6 +44,21 @@ public class Node {
     public void addNeighbor(Node node) {
         float cost = Vector2.Distance(position, node.position);
         addNeighbor(node, cost);
+    }
+
+
+
+    /**
+     * Add the node as a neighbor of the current node.
+     * Use the Euclidian distance for the cost.
+     * @param node
+     */
+    public void addNeighbor(Node node, boolean isDirected) {
+        float cost = Vector2.Distance(position, node.position);
+        addNeighbor(node, cost);
+        if (!isDirected) {
+            node.addNeighbor(this, cost);
+        }
     }
 
     public boolean hasNeighbor(Node neighbor) {
@@ -65,11 +83,11 @@ public class Node {
         }
         Node otherNode = (Node)o;
 
-        return position.equals(otherNode.position);
+        return index == otherNode.index;
     }
 
     @Override
     public int hashCode() {
-        return position.hashCode();
+        return Objects.hash(index);
     }
 }

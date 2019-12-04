@@ -20,7 +20,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     static final int CANVAS_WIDTH  = 960;
     static final int CANVAS_HEIGHT = 600;
     static final boolean DRAW_LINKS = true;
-    static final int AVERAGE_DIST_BETWEEN_NODES = 3;
+    static final int AVERAGE_DIST_BETWEEN_NODES = 20;
 
     static final Vector2 GRAPH_OFFSET = new Vector2(50, 50);
     static final Vector2 RAND_OFFSET = new Vector2(0.f, 0.f); //coeff
@@ -39,7 +39,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
                 GRAPH_OFFSET,
                 RAND_OFFSET);
 
-        this.pathfinder = new PathCalculator(graph, new AStar(Heuristics::euclidianDistance));
+        this.pathfinder = new PathCalculator(graph, new AStar(Heuristics::manhattanDistance));
         this.pathfinder.notifyObserver = new Runnable() {
             @Override
             public void run() {
