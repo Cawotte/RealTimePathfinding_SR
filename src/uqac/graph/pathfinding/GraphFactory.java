@@ -36,7 +36,8 @@ public class GraphFactory {
                 if (offsetNodeY != 0)
                     y += rand.nextInt(offsetNodeY) - offsetNodeY / 2;
 
-                arrayGraph[i][j] = new Node(x, y);
+                int[] idNode = {i,j};
+                arrayGraph[i][j] = new Node(x, y, idNode);
             }
         }
 
@@ -66,5 +67,25 @@ public class GraphFactory {
         }
 
         return gridGraph;
+    }
+
+
+    /**
+     * Delete edges from an initial graph with a probability of coeff
+     * No isolated nodes
+     * @param graphInit WeightedGraph
+     * @param coeff double, probability
+     * @return
+     */
+    public static WeightedGraph generateGridGraph2(WeightedGraph graphInit, double coeff){
+        for(Node nodeGraph : graphInit.getNodes()){
+            for(Node nodeNeig : nodeGraph.getNeighbors()){
+                if(Math.random() < coeff && nodeGraph.getNeighbors().size() > 1){
+                    nodeGraph.deleteNeighbor(nodeNeig);
+                }
+            }
+        }
+
+        return graphInit;
     }
 }

@@ -5,6 +5,7 @@ import uqac.graph.Node;
 public class PathNotFoundException extends Exception {
 
     public PathNotFoundException(Node start, Node goal) {
-        super("Path not found between " + start.toString() + " and " + goal.toString() + " !");
+        super("Path not found between Node(" + start.getIdX() + ", " + start.getIdY() +
+                ") and Node(" + goal.getIdX() + ", " + goal.getIdY() + ") !");
     }
 }

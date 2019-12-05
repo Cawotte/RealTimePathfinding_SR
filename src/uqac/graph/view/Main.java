@@ -22,7 +22,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     static final boolean DRAW_LINKS = true;
     static final int AVERAGE_DIST_BETWEEN_NODES = 20;
 
-    static final Vector2 GRAPH_OFFSET = new Vector2(50, 50);
+    static final Vector2 GRAPH_OFFSET = new Vector2(10, 10);
     static final Vector2 RAND_OFFSET = new Vector2(0.f, 0.f); //coeff
     private GraphCanvas canvas;
 
@@ -33,11 +33,12 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     public Main() {
 
         //DATA
-        this.graph = GraphFactory.generateGridGraph(
+        WeightedGraph graphInit = GraphFactory.generateGridGraph(
                 CANVAS_WIDTH, CANVAS_HEIGHT,
                 AVERAGE_DIST_BETWEEN_NODES,
                 GRAPH_OFFSET,
                 RAND_OFFSET);
+        this.graph = GraphFactory.generateGridGraph2(graphInit, 0.5);
 
         this.pathfinder = new PathCalculator(graph, new AStar(Heuristics::manhattanDistance));
         this.pathfinder.notifyObserver = new Runnable() {

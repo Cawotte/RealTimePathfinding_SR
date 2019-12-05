@@ -12,13 +12,13 @@ import java.util.Objects;
 public class Node {
 
 
+    private int[] id; // node position in the array, ! First Node id = [0,0]
     public Vector2 position;
-
     private Hashtable<Node, Float> neighbors = new Hashtable<>();
 
-    public Node(float x, float y) {
-
+    public Node(float x, float y, int[] id) {
         this.position = new Vector2(x,y);
+        this.id = id;
     }
 
 
@@ -41,6 +41,14 @@ public class Node {
     public void addNeighbor(Node node) {
         float cost = Vector2.Distance(position, node.position);
         addNeighbor(node, cost);
+    }
+
+    /**
+     * Delete the node as a neighbor of the current node
+     * @param node
+     */
+    public void deleteNeighbor(Node node) {
+        neighbors.remove(node);
     }
 
 
@@ -68,6 +76,13 @@ public class Node {
 
     public ArrayList<Node> getNeighbors() {
         return Collections.list(neighbors.keys());
+    }
+
+    public int getIdX() {
+        return id[0];
+    }
+    public int getIdY() {
+        return id[1];
     }
 
     @Override
