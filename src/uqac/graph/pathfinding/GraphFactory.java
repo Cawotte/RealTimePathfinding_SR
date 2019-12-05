@@ -19,9 +19,6 @@ public class GraphFactory {
         //TODO : SEED THAT RANDOM
         Random rand = new Random();
 
-        Vector2 minBounds = new Vector2();
-        Vector2 maxBounds = new Vector2();
-
         for (int i = 0; i < nbNodeWidth; i++) {
             for (int j = 0; j < nbNodeHeight; j++) {
 
@@ -92,6 +89,8 @@ public class GraphFactory {
             for(Node nodeNeig : nodeGraph.getNeighbors()){
                 if(Math.random() < coeff && nodeGraph.getNeighbors().size() > 1){
                     nodeGraph.deleteNeighbor(nodeNeig);
+                    //remove in both directions
+                    nodeNeig.deleteNeighbor(nodeGraph);
                 }
             }
         }

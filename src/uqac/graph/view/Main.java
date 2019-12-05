@@ -49,10 +49,10 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
         //Initialise le graph
        WeightedGraph graphInit = GraphFactory.generateGridGraph(
-                nbNodesX, nbNodesY, RAND_OFFSET, false);
+                nbNodesX, nbNodesY, RAND_OFFSET, true);
         this.graph = graphInit;
 
-        this.graph = GraphFactory.generateGridGraph2(graphInit, 0.7);
+        this.graph = GraphFactory.generateGridGraph2(graphInit, 0.5);
 
 
         this.pathfinder = new PathCalculator(graph, new AStar(Heuristics::euclidianDistance));
