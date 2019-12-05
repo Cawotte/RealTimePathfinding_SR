@@ -7,16 +7,11 @@ import java.util.Random;
 public class GraphFactory {
 
 
-    public static WeightedGraph generateGridGraph(int width, int height, int distanceBetweenNodes,
-        Vector2 graphOffset, Vector2 randOffset) {
+    public static WeightedGraph generateGridGraph(int nbNodeWidth, int nbNodeHeight,
+                                                  Vector2 randOffset, boolean hasDiagonal) {
 
+        //int nbNodeWide, int nbNodeWidth, int randOffset
         //Create a 2D array of Node, then convert it to an actual Graph object.
-
-        int nbNodeWidth = (width - (int)graphOffset.x * 2) / distanceBetweenNodes;
-        int nbNodeHeight = (height - (int)graphOffset.y * 2) / distanceBetweenNodes;
-
-        int offsetNodeX = (int)(distanceBetweenNodes * randOffset.x);
-        int offsetNodeY = (int)(distanceBetweenNodes * randOffset.y);
 
         //temp array for better gen
         Node[][] arrayGraph = new Node[nbNodeWidth][nbNodeHeight];
@@ -24,17 +19,18 @@ public class GraphFactory {
         //TODO : SEED THAT RANDOM
         Random rand = new Random();
 
+        Vector2 minBounds = new Vector2();
+        Vector2 maxBounds = new Vector2();
+
         for (int i = 0; i < nbNodeWidth; i++) {
             for (int j = 0; j < nbNodeHeight; j++) {
 
-                int x = (int)graphOffset.x + i * distanceBetweenNodes;
-                int y = (int)graphOffset.y + j * distanceBetweenNodes;
+                float x = i;
+                float y = j;
 
                 //apply offset, range [-offset / 2, +offset / 2]
-                if (offsetNodeX != 0)
-                    x += rand.nextInt(offsetNodeX) - offsetNodeX / 2;
-                if (offsetNodeY != 0)
-                    y += rand.nextInt(offsetNodeY) - offsetNodeY / 2;
+                x += rand.nextFloat() * randOffset.x - randOffset.x / 2;
+                y += rand.nextFloat() * randOffset.y - randOffset.y / 2;
 
                 int[] idNode = {i,j};
                 arrayGraph[i][j] = new Node(x, y, idNode);
@@ -59,18 +55,20 @@ public class GraphFactory {
                     arrayGraph[i][j].addNeighbor(arrayGraph[i][j + 1]);
                 }
 
-                // add diagonale edges !!
-                if (i > 0 && j > 0) {
-                    arrayGraph[i][j].addNeighbor(arrayGraph[i - 1][j - 1]);
-                }
-                if (i < nbNodeWidth - 1 && j > 0) {
-                    arrayGraph[i][j].addNeighbor(arrayGraph[i + 1][j - 1]);
-                }
-                if (i > 0 && j < nbNodeHeight - 1) {
-                    arrayGraph[i][j].addNeighbor(arrayGraph[i - 1][j + 1]);
-                }
-                if (i < nbNodeWidth - 1 && j < nbNodeHeight - 1) {
-                    arrayGraph[i][j].addNeighbor(arrayGraph[i + 1][j + 1]);
+                if (hasDiagonal) {
+                    // add diagonale edges !!
+                    if (i > 0 && j > 0) {
+                        arrayGraph[i][j].addNeighbor(arrayGraph[i - 1][j - 1]);
+                    }
+                    if (i < nbNodeWidth - 1 && j > 0) {
+                        arrayGraph[i][j].addNeighbor(arrayGraph[i + 1][j - 1]);
+                    }
+                    if (i > 0 && j < nbNodeHeight - 1) {
+                        arrayGraph[i][j].addNeighbor(arrayGraph[i - 1][j + 1]);
+                    }
+                    if (i < nbNodeWidth - 1 && j < nbNodeHeight - 1) {
+                        arrayGraph[i][j].addNeighbor(arrayGraph[i + 1][j + 1]);
+                    }
                 }
 
                 //Add the node to the Weigted Graph

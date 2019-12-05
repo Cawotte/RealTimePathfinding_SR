@@ -24,6 +24,13 @@ public class Vector2 {
         );
     }
 
+    public static Vector2 lerp(Vector2 a, Vector2 b, float f) {
+        return new Vector2(
+                lerp(a.x, b.x, f),
+                lerp(a.y, b.y, f)
+        );
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -36,6 +43,10 @@ public class Vector2 {
         Vector2 otherPos = (Vector2)o;
         return (Vector2.Distance(this, otherPos) < 0.001f);
         //return (x == otherPos.x && y == otherPos.y);
+    }
+
+    private static float lerp(float a, float b, float f) {
+        return a + f * (b - a);
     }
 
     @Override

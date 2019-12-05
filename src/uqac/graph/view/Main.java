@@ -17,13 +17,18 @@ import java.awt.event.MouseMotionListener;
 public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
     // Define constants
+
+    //GRAPH CONSTANT
+    static final int NB_NODES = 1000;
+    static final Vector2 RAND_OFFSET = new Vector2(0.3f, 0.3f); //coeff
+
+    //CANVAS GRAPH CONSTANT
     static final int CANVAS_WIDTH  = 960;
     static final int CANVAS_HEIGHT = 600;
+    static final Vector2 GRAPH_OFFSET = new Vector2(50, 50);
     static final boolean DRAW_LINKS = true;
-    static final int AVERAGE_DIST_BETWEEN_NODES = 20;
 
-    static final Vector2 GRAPH_OFFSET = new Vector2(10, 10);
-    static final Vector2 RAND_OFFSET = new Vector2(0.f, 0.f); //coeff
+
     private GraphCanvas canvas;
 
     private WeightedGraph graph;
@@ -33,15 +38,24 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     public Main() {
 
         //DATA
-        WeightedGraph graphInit = GraphFactory.generateGridGraph(
-                CANVAS_WIDTH, CANVAS_HEIGHT,
-                AVERAGE_DIST_BETWEEN_NODES,
-                GRAPH_OFFSET,
-                RAND_OFFSET);
-        //this.graph = graphInit;
+
+        //Calcule le ratio H*L requis pour avoir un graph équidistant en fonction du nombre total de nodes
+        float aspectRatio = (float)CANVAS_WIDTH / (float)CANVAS_HEIGHT;
+
+        int nbNodesY = (int)Math.sqrt(NB_NODES / aspectRatio);
+        int nbNodesX = (int) (nbNodesY * aspectRatio);
+
+        System.out.println("(" + nbNodesX + ", " + nbNodesY + ") = " + nbNodesX * nbNodesY);
+
+        //Initialise le graph
+       WeightedGraph graphInit = GraphFactory.generateGridGraph(
+                nbNodesX, nbNodesY, RAND_OFFSET, false);
+        this.graph = graphInit;
+
         this.graph = GraphFactory.generateGridGraph2(graphInit, 0.7);
 
-        this.pathfinder = new PathCalculator(graph, new AStar(Heuristics::manhattanDistance));
+
+        this.pathfinder = new PathCalculator(graph, new AStar(Heuristics::euclidianDistance));
         this.pathfinder.notifyObserver = new Runnable() {
             @Override
             public void run() {
@@ -53,7 +67,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
         pathfinder.startRecurrentPathfinding();
 
-        canvas = new GraphCanvas(graph, CANVAS_WIDTH, CANVAS_HEIGHT);
+        canvas = new GraphCanvas(graph, CANVAS_WIDTH, CANVAS_HEIGHT, (int)GRAPH_OFFSET.x, (int)GRAPH_OFFSET.y);
         canvas.drawLinks = DRAW_LINKS;
         // Construct the drawing canvas
         canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));

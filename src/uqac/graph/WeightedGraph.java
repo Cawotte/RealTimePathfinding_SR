@@ -8,40 +8,35 @@ public class WeightedGraph {
 
     private HashSet<Node> nodes = new HashSet<>();
 
-    private boolean isDirected;
+    private Vector2 minBounds;
+    private Vector2 maxBounds;
 
     public WeightedGraph() {
-        this.isDirected = false;
-    }
-
-    public WeightedGraph(boolean isDirected) {
-        this.isDirected = isDirected;
-    }
-
-    public WeightedGraph(boolean isDirected, Collection<Node> nodes) {
-        this.isDirected = isDirected;
-        this.nodes = new HashSet<>(nodes);
+        this.minBounds = new Vector2();
+        this.maxBounds = new Vector2();
     }
 
     public void addNode(Node node) {
 
+        //new min x ?
+        if (node.position.x < minBounds.x) {
+            minBounds.x = node.position.x;
+        }
+        //new max x ?
+        else if (node.position.x > maxBounds.x) {
+            maxBounds.x = node.position.x;
+        }
+
+        //new min y ?
+        if (node.position.y < minBounds.y) {
+            minBounds.y = node.position.y;
+        }
+        //new max y ?
+        else if (node.position.y > maxBounds.y) {
+            maxBounds.y = node.position.y;
+        }
+
         nodes.add(node);
-    }
-
-    public void addEdge(Node source, Node destination, float cost) {
-
-        if (!nodes.contains(source) && !nodes.contains(destination)) {
-            //They do not belong both to the same graph!
-            return;
-        }
-
-        source.addNeighbor(destination, cost);
-
-        if (!isDirected) {
-            //repeat it the other way around
-            destination.addNeighbor(source, cost);
-        }
-
     }
 
     public Node getRandomNode() {
@@ -78,6 +73,14 @@ public class WeightedGraph {
         }
 
         return closestNode;
+    }
+
+    public Vector2 getMinBound() {
+        return minBounds;
+    }
+
+    public Vector2 getMaxBound() {
+        return maxBounds;
     }
 
     public HashSet<Node> getNodes() {

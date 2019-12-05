@@ -4,6 +4,7 @@ import uqac.graph.Node;
 import uqac.graph.WeightedGraph;
 import uqac.graph.pathfinding.IRealTimePathfinding;
 import uqac.graph.pathfinding.Path;
+import uqac.graph.pathfinding.PathNotFoundException;
 
 import java.util.Random;
 import java.util.Timer;
@@ -75,9 +76,14 @@ public class PathCalculator {
 
                 if (randomNode1 == null || randomNode2 == null ) return;
 
-                pathFound = pathfindingAlgorithm.computeFullPath(randomNode1, randomNode2);
+                try {
+                    pathFound = pathfindingAlgorithm.computeFullPath(randomNode1, randomNode2);
+                    System.out.println(pathfindingAlgorithm.getLog().toString());
+                }
+                catch (PathNotFoundException exc) {
+                    System.out.println("Chemin non trouvé! Les noeuds sont inacessibles.\n");
+                }
 
-                System.out.println(pathfindingAlgorithm.getLog().toString());
                 notifyObserver.run();
 
             } catch (Exception ex) {

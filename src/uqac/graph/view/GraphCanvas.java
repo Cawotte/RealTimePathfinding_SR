@@ -12,6 +12,7 @@ public class GraphCanvas extends JPanel {
     public boolean drawLinks = false;
 
     private final int nodeRadius = 8;
+
     private final Color colorPath = Color.red;
     private final Color colorGraph = Color.gray;
 
@@ -22,21 +23,30 @@ public class GraphCanvas extends JPanel {
 
     private WeightedGraph graph;
 
+    //Windows size
     private int width;
     private int height;
-    private Vector2 min;
-    private Vector2 max;
 
+    //Graph bounds (in which it has to be drawn)
+    private Vector2 minBounds;
+    private Vector2 maxBounds;
+
+    //Visited nodes of the graph
     private Collection<? extends INode> visited = null;
 
     private Circle pointer = new Circle(0, 0, 5, Color.red);
 
     private Path path;
 
-    public GraphCanvas(WeightedGraph graph, int width, int height) {
+    public GraphCanvas(WeightedGraph graph, int width, int height, int offsetWidth, int offsetHeight) {
         this.graph = graph;
         this.width = width;
         this.height = height;
+
+        this.minBounds = new Vector2(offsetWidth, offsetHeight);
+        this.maxBounds = new Vector2(width - offsetWidth, height - offsetHeight);
+
+
     }
 
     @Override
@@ -62,6 +72,7 @@ public class GraphCanvas extends JPanel {
     public void setVisited(Collection<? extends INode> visited) {
         this.visited = visited;
     }
+
     private void paintBaseGraph(Graphics g) {
 
         //Draw all nodes
@@ -113,10 +124,14 @@ public class GraphCanvas extends JPanel {
     }
 
     private void drawLine(Graphics g, Vector2 a, Vector2 b, Color color) {
+        Vector2 aGraph = posGraphToCanvas(a);
+        Vector2 bGraph = posGraphToCanvas(b);
+
         g.setColor( color );
-        g.drawLine( (int)a.x, (int)a.y, (int)b.x, (int)b.y);
+        g.drawLine( (int)aGraph.x, (int)aGraph.y, (int)bGraph.x, (int)bGraph.y);
     }
 
+    /*
     private Node drawLineToClosestNode(Graphics g) {
 
 
@@ -124,12 +139,26 @@ public class GraphCanvas extends JPanel {
         float distance = Vector2.Distance(pointer.center, closestNode.position);
         drawLine(g, pointer.center, closestNode.position, colorShortDistance);
         return closestNode;
-    }
+    } */
 
     private void drawCircle(Graphics g, Vector2 center, int radius, Color color) {
+        Vector2 centerGraph = posGraphToCanvas(center);
         g.setColor(color);
-        g.fillOval((int)center.x - radius / 2, (int)center.y - radius / 2,
+        g.fillOval((int)centerGraph.x - radius / 2, (int)centerGraph.y - radius / 2,
                 radius, radius);
+    }
+
+    private Vector2 posGraphToCanvas(Vector2 graphPos) {
+
+        Vector2 canvasPos = new Vector2();
+        canvasPos.x = lerp(minBounds.x, maxBounds.x, (graphPos.x - graph.getMinBound().x) / graph.getMaxBound().x);
+        canvasPos.y = lerp(minBounds.y, maxBounds.y, (graphPos.y - graph.getMinBound().y) / graph.getMaxBound().y);
+
+        return canvasPos;
+    }
+
+    private static float lerp(float a, float b, float f) {
+        return a + f * (b - a);
     }
 
 

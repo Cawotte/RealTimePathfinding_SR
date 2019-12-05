@@ -71,7 +71,6 @@ public class AStar implements IRealTimePathfinding {
 
 
 
-        float g;
 
         start.GScore = 0f;
         start.HScore = heuristic.apply(start.node, goal.node);
@@ -115,7 +114,7 @@ public class AStar implements IRealTimePathfinding {
                 if (closedSet.contains(neighbor))
                     continue;
 
-                g = current.GScore + current.node.getCostToNeighbor(neighbor.node);
+                float g = current.GScore + current.node.getCostToNeighbor(neighbor.node);
 
                 // if it's not in the open list...
                 if (!openSet.contains(neighbor))
