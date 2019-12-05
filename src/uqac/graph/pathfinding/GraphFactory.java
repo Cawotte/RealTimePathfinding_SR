@@ -46,8 +46,6 @@ public class GraphFactory {
         //set neighbors
         for (int i = 0; i < nbNodeWidth; i++) {
             for (int j = 0; j < nbNodeHeight; j++) {
-
-
                 if (i > 0) {
                     arrayGraph[i][j].addNeighbor(arrayGraph[i - 1][j]);
                 }
@@ -59,6 +57,20 @@ public class GraphFactory {
                 }
                 if (j < nbNodeHeight - 1) {
                     arrayGraph[i][j].addNeighbor(arrayGraph[i][j + 1]);
+                }
+
+                // add diagonale edges !!
+                if (i > 0 && j > 0) {
+                    arrayGraph[i][j].addNeighbor(arrayGraph[i - 1][j - 1]);
+                }
+                if (i < nbNodeWidth - 1 && j > 0) {
+                    arrayGraph[i][j].addNeighbor(arrayGraph[i + 1][j - 1]);
+                }
+                if (i > 0 && j < nbNodeHeight - 1) {
+                    arrayGraph[i][j].addNeighbor(arrayGraph[i - 1][j + 1]);
+                }
+                if (i < nbNodeWidth - 1 && j < nbNodeHeight - 1) {
+                    arrayGraph[i][j].addNeighbor(arrayGraph[i + 1][j + 1]);
                 }
 
                 //Add the node to the Weigted Graph
@@ -87,5 +99,9 @@ public class GraphFactory {
         }
 
         return graphInit;
+    }
+
+    public void addDiagonalEdges(){
+
     }
 }

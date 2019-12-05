@@ -38,7 +38,8 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
                 AVERAGE_DIST_BETWEEN_NODES,
                 GRAPH_OFFSET,
                 RAND_OFFSET);
-        this.graph = GraphFactory.generateGridGraph2(graphInit, 0.5);
+        //this.graph = graphInit;
+        this.graph = GraphFactory.generateGridGraph2(graphInit, 0.7);
 
         this.pathfinder = new PathCalculator(graph, new AStar(Heuristics::manhattanDistance));
         this.pathfinder.notifyObserver = new Runnable() {
