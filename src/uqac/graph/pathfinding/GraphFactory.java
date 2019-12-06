@@ -87,7 +87,7 @@ public class GraphFactory {
     public static WeightedGraph generateGridGraph2(WeightedGraph graphInit, double coeff){
         for(Node nodeGraph : graphInit.getNodes()){
             for(Node nodeNeig : nodeGraph.getNeighbors()){
-                if(Math.random() < coeff && nodeGraph.getNeighbors().size() > 1){
+                if(Math.random() < coeff && nodeGraph.getNeighbors().size() > 1 && nodeNeig.getNeighbors().size() > 1){
                     nodeGraph.deleteNeighbor(nodeNeig);
                     //remove in both directions
                     nodeNeig.deleteNeighbor(nodeGraph);
@@ -98,7 +98,5 @@ public class GraphFactory {
         return graphInit;
     }
 
-    public void addDiagonalEdges(){
 
-    }
 }
