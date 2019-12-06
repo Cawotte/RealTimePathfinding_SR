@@ -5,6 +5,7 @@ import uqac.graph.pathfinding.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class GraphCanvas extends JPanel {
@@ -105,18 +106,19 @@ public class GraphCanvas extends JPanel {
 
     private void paintPath(Graphics g, Path path) {
 
-        Node previousNode = null;
-        for (Node node : path.getNodePath()) {
+        INode previousNode = null;
+        ArrayList<INode> nodes = path.getNodePath();
+        for (INode node : nodes) {
             if (previousNode != null) {
-                drawLine(g, previousNode.position, node.position, colorPath);
+                drawLine(g, previousNode.getPosition(), node.getPosition(), colorPath);
             }
 
             //if not first node
             if (previousNode != null)  {
-                drawCircle(g, node.position, nodeRadius, colorPath);
+                drawCircle(g, node.getPosition(), nodeRadius, colorPath);
             }
             else {
-                drawCircle(g, node.position, nodeRadius * 2, colorStartNode);
+                drawCircle(g, node.getPosition(), nodeRadius * 2, colorStartNode);
             }
 
             previousNode = node;
