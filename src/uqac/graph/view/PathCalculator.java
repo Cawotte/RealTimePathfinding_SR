@@ -103,7 +103,7 @@ public class PathCalculator {
                 start = graph.getRandomNode();
                 goal = graph.getRandomNode();
 
-                startRealTimePathfinding(start, goal, 100);
+                startRealTimePathfinding(start, goal, 50);
 
 
             }

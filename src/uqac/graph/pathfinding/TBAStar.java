@@ -208,13 +208,8 @@ public class TBAStar implements IRealTimePathfinding {
             //If the agent is not on the current path node
             if (!pathFollow.getIterator().getCurrent().equals(currentAgentNode)) {
 
-                System.out.println("Crosspath");
                 //Set agent to correct index (happen when the agent cross a new path midway)
                 pathFollow.getIterator().setIndex(indexAgent);
-            }
-            else {
-
-                System.out.println("Follow Path");
             }
 
             currentAgentNode = pathFollow.getIterator().next();
@@ -223,11 +218,9 @@ public class TBAStar implements IRealTimePathfinding {
             //Backtrack until reaching current path
             if (!currentAgentNode.equals(start)) {
                 //step back
-                System.out.println("Step back");
                 currentAgentNode = currentAgentNode.parent;
             }
             else {
-                System.out.println("Bounce step");
                 currentAgentNode = lastAgentNode;
             }
         }

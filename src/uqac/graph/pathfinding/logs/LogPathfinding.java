@@ -32,8 +32,6 @@ public class LogPathfinding {
         maxMemory = 0L;
 
         //Add Step 0
-        stepTime.add(0L);
-        stepMemory.add(0L);
     }
 
     public void addStep() {

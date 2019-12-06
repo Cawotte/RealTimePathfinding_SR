@@ -13,7 +13,7 @@ public class AStar implements IRealTimePathfinding {
 
     private BiFunction<Node, Node, Float> heuristic;
 
-    private Path<Node> path = new Path<>(false);
+    private Path<Node> path = new Path<>();
     private Iterator<Node> iterator = null;
 
     private LogPathfinding log = new LogPathfinding();
@@ -35,10 +35,9 @@ public class AStar implements IRealTimePathfinding {
         NodeAStar current;
 
         //initialize new path
-        this.path = new Path<>(false);
+        this.path = new Path<>();
 
         if (start.equals(goal)) {
-            path.setCompleted(true);
             log.finishLogging(path);
             return path;
         }
@@ -96,7 +95,6 @@ public class AStar implements IRealTimePathfinding {
                     current = current.parent;
                 }
 
-                path.setCompleted(true);
                 log.finishLogging(path);
 
                 return path;

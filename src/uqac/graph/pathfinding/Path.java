@@ -10,25 +10,17 @@ public class Path<T extends INode> {
     //region Fields
     private ArrayList<T> path = new ArrayList<>();
 
-    private boolean isCompleted = false;
-
     private float cost = 0f;
 
     private PathIterator<T> iterator;
     //endregion
 
     public Path() {
-        this.isCompleted = false;
         this.iterator = new PathIterator<>(this);
 
     }
-    public Path(boolean isCompleted) {
-        this.isCompleted = isCompleted;
-    }
 
-    public Path(ArrayList<T> path, boolean isCompleted) {
-
-        this.isCompleted = isCompleted;
+    public Path(ArrayList<T> path) {
 
         //Add path and compute cost
         for (int i = 0; i < path.size(); i++) {
@@ -102,9 +94,6 @@ public class Path<T extends INode> {
     //region Getter/Setter
 
     //Getter
-    boolean isCompleted() {
-        return isCompleted;
-    }
 
     public int getSize() {
         return path.size();
@@ -135,9 +124,6 @@ public class Path<T extends INode> {
     }
 
     //Setter
-    void setCompleted(boolean isCompleted) {
-        this.isCompleted = isCompleted;
-    }
 
     //endregion
 

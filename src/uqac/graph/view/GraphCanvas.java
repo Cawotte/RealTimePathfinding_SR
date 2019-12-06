@@ -59,7 +59,7 @@ public class GraphCanvas extends JPanel {
         paintBaseGraph(g);
         pointer.draw(g);
 
-        paintVisited(g);
+        //paintVisited(g);
 
         //drawLineToClosestNode(g);
 
@@ -111,13 +111,13 @@ public class GraphCanvas extends JPanel {
 
     private void paintStartGoalCurrent(Graphics g) {
         if (current != null) {
-            drawCircle(g, current.getPosition(), nodeRadius * 2, colorCurrentNode);
+            drawCircle(g, current.getPosition(), nodeRadius, colorCurrentNode);
         }
         if (start != null) {
-            drawCircle(g, start.getPosition(), nodeRadius * 2, colorStartNode);
+            drawCircle(g, start.getPosition(), nodeRadius, colorStartNode);
         }
         if (goal != null) {
-            drawCircle(g, goal.getPosition(), nodeRadius * 2, colorGoalNode);
+            drawCircle(g, goal.getPosition(), nodeRadius, colorGoalNode);
         }
     }
 

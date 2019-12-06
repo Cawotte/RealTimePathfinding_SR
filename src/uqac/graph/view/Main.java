@@ -18,7 +18,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     // Define constants
 
     //GRAPH CONSTANT
-    static final int NB_NODES = 1000;
+    static final int NB_NODES = 100000;
     static final Vector2 RAND_OFFSET = new Vector2(0.3f, 0.3f); //coeff
 
     //CANVAS GRAPH CONSTANT
@@ -26,6 +26,9 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     static final int CANVAS_HEIGHT = 600;
     static final Vector2 GRAPH_OFFSET = new Vector2(50, 50);
 
+    //PATHFINDING TAB* PARAMETERS
+    static final int MAX_STEP_EXPANSION = 100;
+    static final int MAX_STEP_BACKTRACKING = 1000;
 
     private GraphCanvas canvas;
 
@@ -60,7 +63,9 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
             realTimePathfinding = new AStar(heuristics);
         }
         else {
-            realTimePathfinding = new TBAStar(heuristics, 10, 50);
+            realTimePathfinding = new TBAStar(heuristics,
+                    MAX_STEP_EXPANSION,
+                    MAX_STEP_BACKTRACKING);
         }
 
         this.pathfinder = new PathCalculator(graph, realTimePathfinding);
