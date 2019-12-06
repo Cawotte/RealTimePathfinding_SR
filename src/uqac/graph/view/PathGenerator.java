@@ -11,12 +11,12 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class PathCalculator {
+public class PathGenerator {
 
     private WeightedGraph graph;
     private IRealTimePathfinding pathfindingAlgorithm;
 
-    private long minTimePathfinding = 2000L;
+    private long minTimePathfinding;
 
     private int frequencyRandomPathCalculator = 2;
 
@@ -26,9 +26,10 @@ public class PathCalculator {
     private Node goal;
     private INode current;
 
-    public PathCalculator(WeightedGraph graph, IRealTimePathfinding pathfindingAlgorithm) {
+    public PathGenerator(WeightedGraph graph, IRealTimePathfinding pathfindingAlgorithm, long minTimeStep) {
         this.graph = graph;
         this.pathfindingAlgorithm = pathfindingAlgorithm;
+        this.minTimePathfinding = minTimeStep;
     }
 
     public void scheduleNextTimer() {
@@ -103,7 +104,7 @@ public class PathCalculator {
                 start = graph.getRandomNode();
                 goal = graph.getRandomNode();
 
-                startRealTimePathfinding(start, goal, 50);
+                startRealTimePathfinding(start, goal, minTimePathfinding);
 
 
             }

@@ -34,6 +34,7 @@ public class GraphCanvas extends JPanel {
 
     //Visited nodes of the graph
     private Collection<? extends INode> visited = null;
+    private boolean displayVisited;
     private INode start = null;
     private INode goal = null;
     private INode current = null;
@@ -42,10 +43,11 @@ public class GraphCanvas extends JPanel {
     private Circle pointer = new Circle(0, 0, 5, Color.red);
 
 
-    public GraphCanvas(WeightedGraph graph, int width, int height, int offsetWidth, int offsetHeight) {
+    public GraphCanvas(WeightedGraph graph, int width, int height, int offsetWidth, int offsetHeight, boolean displayVisited) {
         this.graph = graph;
         this.width = width;
         this.height = height;
+        this.displayVisited = displayVisited;
 
         this.minBounds = new Vector2(offsetWidth, offsetHeight);
         this.maxBounds = new Vector2(width - offsetWidth, height - offsetHeight);
@@ -59,7 +61,8 @@ public class GraphCanvas extends JPanel {
         paintBaseGraph(g);
         pointer.draw(g);
 
-        //paintVisited(g);
+        if (displayVisited)
+            paintVisited(g);
 
         //drawLineToClosestNode(g);
 
