@@ -13,9 +13,9 @@ public interface IRealTimePathfinding {
     Path computeFullPath(Node start, Node goal) throws PathNotFoundException;
 
     //Real Time Pathfinding
-    void beginPathfinding(Node start, Node goal);
+    void beginPathfinding(Node start, Node goal) throws PathNotFoundException;
 
-    Node getNextStep();
+    Node getNextStep() throws PathNotFoundException;
 
     boolean hasFinished();
 

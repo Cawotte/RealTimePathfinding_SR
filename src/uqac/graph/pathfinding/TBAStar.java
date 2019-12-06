@@ -2,7 +2,6 @@ package uqac.graph.pathfinding;
 
 import uqac.graph.INode;
 import uqac.graph.Node;
-import uqac.graph.WeightedGraph;
 import uqac.graph.pathfinding.logs.LogPathfinding;
 
 import java.util.*;
@@ -15,6 +14,7 @@ public class TBAStar implements IRealTimePathfinding {
 
     private NodeAStar currentAgentNode;
     private NodeAStar currentBestNode;
+    private NodeAStar lastAgentNode; //used for fringe case scenarios
 
     private int nbStepExpansion;
     private int nbStepBacktracking;
@@ -22,9 +22,9 @@ public class TBAStar implements IRealTimePathfinding {
     private Path<NodeAStar> pathNew;
     private Path<NodeAStar> pathFollow;
 
-    boolean solutionFound = false;
-    boolean solutionFoundAndTraced = false;
-    boolean doneTrace = true;
+    private boolean solutionFound = false;
+    private boolean solutionFoundAndTraced = false;
+    private boolean doneTrace = true;
 
 
     private BiFunction<Node, Node, Float> heuristic;
@@ -32,6 +32,13 @@ public class TBAStar implements IRealTimePathfinding {
 
     HashSet<NodeAStar> closedSet = new HashSet<>();
     PriorityQueue<NodeAStar> openSet;
+
+    public TBAStar(BiFunction<Node, Node, Float> heuristic, int nbStepExpansion, int nbStepBacktracking)
+    {
+        this.heuristic = heuristic;
+        this.nbStepBacktracking = nbStepBacktracking;
+        this.nbStepExpansion = nbStepExpansion;
+    }
 
     @Override
     public Path computeFullPath(Node start, Node goal) throws PathNotFoundException {
@@ -67,6 +74,7 @@ public class TBAStar implements IRealTimePathfinding {
 
         this.start = new NodeAStar(start);
         this.goal = new NodeAStar(goal);
+        this.currentAgentNode = this.start;
 
 
         openSet.add(this.start);
@@ -75,30 +83,39 @@ public class TBAStar implements IRealTimePathfinding {
 
 
     @Override
-    public Node getNextStep() {
+    public Node getNextStep() throws PathNotFoundException {
 
-        return null;
+        planningPhase();
 
+        executionPhase();
+
+        if (hasFinished()) {
+            log.finishLogging(pathFollow);
+        }
+
+        log.addStep();
+
+        return currentAgentNode.node;
     }
 
     @Override
     public boolean hasFinished() {
-        return false;
+        return goal.equals(currentAgentNode);
     }
 
     @Override
     public Path getPath() {
-        return null;
+        return pathNew;
     }
 
     @Override
     public Collection<? extends INode> getVisited() {
-        return null;
+        return closedSet;
     }
 
     @Override
     public LogPathfinding getLog() {
-        return null;
+        return log;
     }
 
     private void planningPhase() throws PathNotFoundException {
@@ -108,14 +125,14 @@ public class TBAStar implements IRealTimePathfinding {
             solutionFound = stateExpansion(nbStepExpansion);
         }
         //Backtracking phase
-        else if (!solutionFoundAndTraced) {
+        if (!solutionFoundAndTraced) {
 
             if (doneTrace) {
                 pathNew = new Path<>();
                 pathNew.addNode(currentBestNode);
             }
 
-            doneTrace = traceback(pathNew, currentAgentNode, nbStepBacktracking);
+            doneTrace = traceback(pathNew, nbStepBacktracking);
 
             if (doneTrace) {
                 pathFollow = pathNew;
@@ -163,30 +180,65 @@ public class TBAStar implements IRealTimePathfinding {
     }
 
 
-    private boolean traceback(Path pathNew, NodeAStar currentAgentNode, int nbStepBacktracking) {
+    private boolean traceback(Path pathNew, int nbStepBacktracking) {
 
         int nbStep = 0;
-        NodeAStar current = (NodeAStar)pathNew.getGoal();
+        NodeAStar current = (NodeAStar)pathNew.getStart();
 
-        while (!pathHasFinishedBacktracking(pathNew) && nbStepBacktracking > nbStep) {
+        while (!pathHasFinishedBacktracking(current) && nbStepBacktracking > nbStep) {
 
-            pathNew.addNode(current);
-
+            pathNew.addNodeAtBeginning(current.parent);
+            current = current.parent;
             nbStep++;
         }
 
 
-        return pathHasFinishedBacktracking(pathNew);
+        return pathHasFinishedBacktracking(current);
     }
 
     private void executionPhase() {
 
+
         //Execution Phase
+        int indexAgent = pathFollow.indexOf(currentAgentNode);
+
+        //If agent is on path
+        if (indexAgent >= 0) {
+
+            //If the agent is not on the current path node
+            if (!pathFollow.getIterator().getCurrent().equals(currentAgentNode)) {
+
+                System.out.println("Crosspath");
+                //Set agent to correct index (happen when the agent cross a new path midway)
+                pathFollow.getIterator().setIndex(indexAgent);
+            }
+            else {
+
+                System.out.println("Follow Path");
+            }
+
+            currentAgentNode = pathFollow.getIterator().next();
+        }
+        else {
+            //Backtrack until reaching current path
+            if (!currentAgentNode.equals(start)) {
+                //step back
+                System.out.println("Step back");
+                currentAgentNode = currentAgentNode.parent;
+            }
+            else {
+                System.out.println("Bounce step");
+                currentAgentNode = lastAgentNode;
+            }
+        }
+
+        lastAgentNode = currentAgentNode;
+
 
     }
 
-    private boolean pathHasFinishedBacktracking(Path pathNew) {
-        return pathNew.getGoal().equals(currentAgentNode.node) || pathNew.getGoal().equals(start.node);
+    private boolean pathHasFinishedBacktracking(NodeAStar current) {
+        return current.equals(currentAgentNode) || current.equals(start);
     }
 
 

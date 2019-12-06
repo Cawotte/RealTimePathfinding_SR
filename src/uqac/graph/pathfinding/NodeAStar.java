@@ -90,7 +90,7 @@ public class NodeAStar implements INode {
 
         String str = "";
         str += "(" + df.format(getPosition().x) + ", " + df.format(getPosition().y) + ")";
-        str += ", (" + GScore + ", " + HScore + ", " + getFScore() + ")";
+        //str += ", (" + GScore + ", " + HScore + ", " + getFScore() + ")";
         return str;
     }
 
@@ -106,6 +106,11 @@ public class NodeAStar implements INode {
 
     @Override
     public float getCostToNeighbor(INode neighbor) {
-        return node.getCostToNeighbor(neighbor);
+        if (neighbor instanceof Node) {
+            return node.getCostToNeighbor((Node)neighbor);
+        }
+        else {
+            return node.getCostToNeighbor(((NodeAStar)neighbor).node);
+        }
     }
 }

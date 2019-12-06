@@ -10,7 +10,6 @@ import java.util.Collection;
 
 public class GraphCanvas extends JPanel {
 
-    public boolean drawLinks = false;
 
     private final int nodeRadius = 8;
 
@@ -19,8 +18,9 @@ public class GraphCanvas extends JPanel {
 
     private final Color colorVisited = Color.orange;
     private final Color colorStartNode = Color.blue;
+    private final Color colorGoalNode = Color.orange;
+    private final Color colorCurrentNode = Color.green;
 
-    private final Color colorShortDistance = Color.blue;
 
     private WeightedGraph graph;
 
@@ -34,10 +34,13 @@ public class GraphCanvas extends JPanel {
 
     //Visited nodes of the graph
     private Collection<? extends INode> visited = null;
+    private INode start = null;
+    private INode goal = null;
+    private INode current = null;
+    private Path path;
 
     private Circle pointer = new Circle(0, 0, 5, Color.red);
 
-    private Path path;
 
     public GraphCanvas(WeightedGraph graph, int width, int height, int offsetWidth, int offsetHeight) {
         this.graph = graph;
@@ -64,6 +67,8 @@ public class GraphCanvas extends JPanel {
             paintPath(g, path);
         }
 
+        paintStartGoalCurrent(g);
+
     }
 
     public void setPath(Path path) {
@@ -74,6 +79,17 @@ public class GraphCanvas extends JPanel {
         this.visited = visited;
     }
 
+    public void setCurrent(INode node) {
+        this.current = node;
+    }
+
+    public void setStart(INode node) {
+        this.start = node;
+    }
+
+    public void setGoal(INode node) {
+        this.goal = node;
+    }
     private void paintBaseGraph(Graphics g) {
 
         //Draw all nodes
@@ -81,8 +97,7 @@ public class GraphCanvas extends JPanel {
             drawCircle(g, node.position, nodeRadius, colorGraph);
         }
 
-        if (drawLinks)
-            drawLink(g);
+        drawLink(g);
     }
 
     private void paintVisited(Graphics g) {
@@ -91,6 +106,18 @@ public class GraphCanvas extends JPanel {
 
         for (INode visitedNode : visited) {
             drawCircle(g, visitedNode.getPosition(), nodeRadius, colorVisited);
+        }
+    }
+
+    private void paintStartGoalCurrent(Graphics g) {
+        if (current != null) {
+            drawCircle(g, current.getPosition(), nodeRadius * 2, colorCurrentNode);
+        }
+        if (start != null) {
+            drawCircle(g, start.getPosition(), nodeRadius * 2, colorStartNode);
+        }
+        if (goal != null) {
+            drawCircle(g, goal.getPosition(), nodeRadius * 2, colorGoalNode);
         }
     }
 
@@ -113,13 +140,7 @@ public class GraphCanvas extends JPanel {
                 drawLine(g, previousNode.getPosition(), node.getPosition(), colorPath);
             }
 
-            //if not first node
-            if (previousNode != null)  {
-                drawCircle(g, node.getPosition(), nodeRadius, colorPath);
-            }
-            else {
-                drawCircle(g, node.getPosition(), nodeRadius * 2, colorStartNode);
-            }
+            drawCircle(g, node.getPosition(), nodeRadius, colorPath);
 
             previousNode = node;
         }

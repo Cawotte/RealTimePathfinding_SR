@@ -4,15 +4,14 @@ package uqac.graph.view;
 import uqac.graph.*;
 import uqac.graph.Vector2;
 import uqac.graph.WeightedGraph;
-import uqac.graph.pathfinding.AStar;
-import uqac.graph.pathfinding.GraphFactory;
-import uqac.graph.pathfinding.Heuristics;
+import uqac.graph.pathfinding.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.function.BiFunction;
 
 public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
@@ -26,7 +25,6 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     static final int CANVAS_WIDTH  = 960;
     static final int CANVAS_HEIGHT = 600;
     static final Vector2 GRAPH_OFFSET = new Vector2(50, 50);
-    static final boolean DRAW_LINKS = true;
 
 
     private GraphCanvas canvas;
@@ -34,6 +32,8 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     private WeightedGraph graph;
     private PathCalculator pathfinder;
 
+    private IRealTimePathfinding realTimePathfinding;
+    private BiFunction<Node, Node, Float> heuristics = Heuristics::euclidianDistance;
 
     public Main() {
 
@@ -52,25 +52,33 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
                 nbNodesX, nbNodesY, RAND_OFFSET, true);
         this.graph = graphInit;
 
-        this.graph = GraphFactory.generateGridGraph2(graphInit, 0.5);
+        this.graph = GraphFactory.generateGridGraph2(graphInit, 0.3);
 
+        // SETUP PATHFINDIN
+        int choix = 1;
+        if (choix == 0) {
+            realTimePathfinding = new AStar(heuristics);
+        }
+        else {
+            realTimePathfinding = new TBAStar(heuristics, 10, 50);
+        }
 
-        this.pathfinder = new PathCalculator(graph, new AStar(Heuristics::euclidianDistance));
-        this.pathfinder.notifyObserver = new Runnable() {
-            @Override
-            public void run() {
-                canvas.setPath(pathfinder.getPathfindingAlgorithm().getPath());
-                canvas.setVisited(pathfinder.getPathfindingAlgorithm().getVisited());
-                repaintGraph();
-            }
-        };
+        this.pathfinder = new PathCalculator(graph, realTimePathfinding);
+        this.pathfinder.notifyObserver = this::updateAndRepaintGraph;
 
-        pathfinder.startRecurrentPathfinding();
+        //Start generating random pathfinding
+        pathfinder.scheduleNextTimer();
+
+        /// SETUP GRAPH CANVAS
 
         canvas = new GraphCanvas(graph, CANVAS_WIDTH, CANVAS_HEIGHT, (int)GRAPH_OFFSET.x, (int)GRAPH_OFFSET.y);
-        canvas.drawLinks = DRAW_LINKS;
+
+
+        /// SETUP WINDOWS
+
         // Construct the drawing canvas
         canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
+
 
         // Set the Test.Drawing JPanel as the JFrame's content-pane
         Container cp = getContentPane();
@@ -86,7 +94,13 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
         setVisible(true);    // "super" JFrame show
     }
 
-    private void repaintGraph() {
+    private void updateAndRepaintGraph() {
+
+        canvas.setPath(pathfinder.getPathfindingAlgorithm().getPath());
+        canvas.setVisited(pathfinder.getPathfindingAlgorithm().getVisited());
+        canvas.setStart(pathfinder.getStart());
+        canvas.setGoal(pathfinder.getGoal());
+        canvas.setCurrent(pathfinder.getCurrent());
         this.repaint();
     }
 

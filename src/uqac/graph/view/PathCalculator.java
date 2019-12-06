@@ -1,5 +1,6 @@
 package uqac.graph.view;
 
+import uqac.graph.INode;
 import uqac.graph.Node;
 import uqac.graph.WeightedGraph;
 import uqac.graph.pathfinding.IRealTimePathfinding;
@@ -14,7 +15,6 @@ public class PathCalculator {
 
     private WeightedGraph graph;
     private IRealTimePathfinding pathfindingAlgorithm;
-    private Path pathFound;
 
     private long minTimePathfinding = 2000L;
 
@@ -22,21 +22,13 @@ public class PathCalculator {
 
     public Runnable notifyObserver;
 
+    private Node start;
+    private Node goal;
+    private INode current;
+
     public PathCalculator(WeightedGraph graph, IRealTimePathfinding pathfindingAlgorithm) {
         this.graph = graph;
         this.pathfindingAlgorithm = pathfindingAlgorithm;
-    }
-
-    public void startRecurrentPathfinding() {
-
-
-        Timer timer = new Timer();
-
-        //setup timer path
-        TimerTask recurringPathfinding = new TaskRandomPath();
-            //repeat
-        timer.schedule(recurringPathfinding,frequencyRandomPathCalculator * 1000);
-
     }
 
     public void scheduleNextTimer() {
@@ -49,7 +41,11 @@ public class PathCalculator {
         timer.schedule(recurringPathfinding,frequencyRandomPathCalculator * 1000);
     }
 
-    private void startRealTimePathfinding(Node start, Node goal, long minStepTime) {
+    private void startRealTimePathfinding(Node start, Node goal, long minStepTime) throws PathNotFoundException {
+
+        this.start = start;
+        this.goal = goal;
+        this.current = start;
 
         pathfindingAlgorithm.beginPathfinding(start, goal);
 
@@ -57,7 +53,7 @@ public class PathCalculator {
 
             long startTime = System.currentTimeMillis();
 
-            Node nextMove = pathfindingAlgorithm.getNextStep();
+            this.current = pathfindingAlgorithm.getNextStep();
 
             notifyObserver.run();
 
@@ -86,34 +82,41 @@ public class PathCalculator {
         return pathfindingAlgorithm;
     }
 
+    public INode getStart() {
+        return start;
+    }
+
+    public INode getGoal() {
+        return goal;
+    }
+
+    public INode getCurrent() {
+        return current;
+    }
+
 
     class TaskRandomPath extends TimerTask {
 
         public void run() {
             try {
 
-                Node randomNode1 = graph.getRandomNode();
-                Node randomNode2 = graph.getRandomNode();
+                start = graph.getRandomNode();
+                goal = graph.getRandomNode();
 
-                startRealTimePathfinding(randomNode1, randomNode2, 0);
-                /*
-                try {
-                    pathFound = pathfindingAlgorithm.computeFullPath(randomNode1, randomNode2);
-                    System.out.println(pathfindingAlgorithm.getLog().toString());
-                }
-                catch (PathNotFoundException exc) {
-                    System.out.println("Chemin non trouvé! Les noeuds sont inacessibles.\n");
-                }
+                startRealTimePathfinding(start, goal, 100);
 
-                notifyObserver.run(); */
 
-                //relaunch
-                scheduleNextTimer();
-
-            } catch (Exception ex) {
+            }
+            catch (PathNotFoundException pnfe) {
+                System.out.println("AStar : Path not found!");
+            }
+            catch (Exception ex) {
                 System.out.println("Error running thread " + ex.getMessage());
                 ex.printStackTrace();
             }
+
+            //relaunch
+            scheduleNextTimer();
         }
     }
 

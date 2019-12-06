@@ -1,10 +1,9 @@
 package uqac.graph.pathfinding;
 
 import uqac.graph.INode;
-import uqac.graph.Node;
-import uqac.graph.pathfinding.logs.LogPathfinding;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Path<T extends INode> {
 
@@ -15,10 +14,13 @@ public class Path<T extends INode> {
 
     private float cost = 0f;
 
+    private PathIterator<T> iterator;
     //endregion
 
     public Path() {
         this.isCompleted = false;
+        this.iterator = new PathIterator<>(this);
+
     }
     public Path(boolean isCompleted) {
         this.isCompleted = isCompleted;
@@ -50,9 +52,11 @@ public class Path<T extends INode> {
     public void addNodeAtBeginning(T node) {
         if (!path.isEmpty()) {
             //Add the cost from the NEW node TO the PREVIOUS node.
+
             cost += node.getCostToNeighbor(path.get(0));
         }
         path.add(0, node);
+        iterator.increaseIndex();
     }
 
     public boolean removeLast() {
@@ -84,7 +88,16 @@ public class Path<T extends INode> {
         return ((getCost() / optimalPath.getCost() ) - 1f) * 100f;
     }
 
-    //public void removeLast ?
+    @Override
+    public String toString() {
+        String str = "";
+        int i = 0;
+        for (T node : path) {
+            str += i + " : " + node.toString() + "\n";
+            i++;
+        }
+        return str;
+    }
 
     //region Getter/Setter
 
@@ -109,6 +122,14 @@ public class Path<T extends INode> {
         return path.get(path.size() - 1);
     }
 
+    public PathIterator<T> getIterator() {
+        return iterator;
+    }
+
+    public int indexOf(T node) {
+        return path.indexOf(node);
+    }
+
     public ArrayList<T> getNodePath() {
         return path;
     }
@@ -119,4 +140,39 @@ public class Path<T extends INode> {
     }
 
     //endregion
+
+    class PathIterator<T extends INode> implements Iterator<T> {
+
+        private int index;
+        private T current;
+        private Path<T> path;
+
+        public PathIterator(Path<T> path) {
+            this.path = path;
+            this.current = null;
+            this.index = 0;
+        }
+
+        public T getCurrent() {
+            return path.getNodePath().get(index);
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        public void increaseIndex() {
+            this.index++;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < path.getSize();
+        }
+
+        @Override
+        public T next() {
+            return path.getNodePath().get(++index);
+        }
+    }
 }

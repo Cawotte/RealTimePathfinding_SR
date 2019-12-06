@@ -112,17 +112,9 @@ public class AStar implements IRealTimePathfinding {
     }
 
     @Override
-    public void beginPathfinding(Node start, Node goal) {
+    public void beginPathfinding(Node start, Node goal) throws PathNotFoundException {
 
-
-        try {
-            path = computeFullPath(start, goal);
-        }
-        catch (PathNotFoundException err) {
-            System.out.println("AStar : Path not found!");
-            path = new Path<>();
-        }
-
+        path = computeFullPath(start, goal);
         iterator = path.getNodePath().iterator();
 
     }
