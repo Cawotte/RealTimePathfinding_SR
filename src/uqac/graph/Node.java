@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * Noeud de graph à poids
  */
-public class Node {
+public class Node implements INode {
 
 
     private int[] id; // node position in the array, ! First Node id = [0,0]
@@ -70,7 +70,13 @@ public class Node {
         return neighbors.containsKey(neighbor);
     }
 
-    public float getCostToNeighbor(Node neighbor) {
+    @Override
+    public Vector2 getPosition() {
+        return position;
+    }
+
+    @Override
+    public float getCostToNeighbor(INode neighbor) {
         return neighbors.get(neighbor);
     }
 

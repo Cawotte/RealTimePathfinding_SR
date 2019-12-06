@@ -1,14 +1,15 @@
 package uqac.graph.pathfinding;
 
+import uqac.graph.INode;
 import uqac.graph.Node;
 import uqac.graph.pathfinding.logs.LogPathfinding;
 
 import java.util.ArrayList;
 
-public class Path {
+public class Path<T extends INode> {
 
     //region Fields
-    private ArrayList<Node> path = new ArrayList<>();
+    private ArrayList<T> path = new ArrayList<>();
 
     private boolean isCompleted = false;
 
@@ -16,11 +17,14 @@ public class Path {
 
     //endregion
 
+    public Path() {
+        this.isCompleted = false;
+    }
     public Path(boolean isCompleted) {
         this.isCompleted = isCompleted;
     }
 
-    public Path(ArrayList<Node> path, boolean isCompleted) {
+    public Path(ArrayList<T> path, boolean isCompleted) {
 
         this.isCompleted = isCompleted;
 
@@ -35,7 +39,7 @@ public class Path {
         return path.isEmpty();
     }
 
-    public void addNode(Node node) {
+    public void addNode(T node) {
         if (!path.isEmpty()) {
             //Add the cost from the NEW node TO the PREVIOUS node.
             cost += path.get(0).getCostToNeighbor(node);
@@ -43,7 +47,7 @@ public class Path {
         path.add(node);
     }
 
-    public void addNodeAtBeginning(Node node) {
+    public void addNodeAtBeginning(T node) {
         if (!path.isEmpty()) {
             //Add the cost from the NEW node TO the PREVIOUS node.
             cost += node.getCostToNeighbor(path.get(0));
@@ -54,7 +58,7 @@ public class Path {
     public boolean removeLast() {
 
         if (!path.isEmpty()) {
-            Node toRemove = getGoal(); //Goal is last, even if not completed
+            T toRemove = getGoal(); //Goal is last, even if not completed
 
             //If there's currently at least two nodes
             if (path.size() > 1) {
@@ -67,6 +71,7 @@ public class Path {
 
         return false;
     }
+
 
     /**
      * Get the path suboptimality compared to the given optimal path in %.
@@ -96,15 +101,15 @@ public class Path {
         return cost;
     }
 
-    public Node getStart() {
+    public T getStart() {
         return path.get(0);
     }
 
-    public Node getGoal() {
+    public T getGoal() {
         return path.get(path.size() - 1);
     }
 
-    public ArrayList<Node> getNodePath() {
+    public ArrayList<T> getNodePath() {
         return path;
     }
 
