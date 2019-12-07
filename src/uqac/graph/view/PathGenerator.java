@@ -7,6 +7,8 @@ import uqac.graph.pathfinding.IRealTimePathfinding;
 import uqac.graph.pathfinding.Path;
 import uqac.graph.pathfinding.PathNotFoundException;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,11 +16,13 @@ import java.util.TimerTask;
 public class PathGenerator {
 
     private WeightedGraph graph;
-    private IRealTimePathfinding pathfindingAlgorithm;
+
+    private ArrayList<IRealTimePathfinding> pathAlgorithms;
+    private IRealTimePathfinding currentlyUsedAlgorithm;
 
     private long minTimePathfinding;
 
-    private int frequencyRandomPathCalculator = 2;
+    private int delay = 2;
 
     public Runnable notifyObserver;
 
@@ -28,7 +32,14 @@ public class PathGenerator {
 
     public PathGenerator(WeightedGraph graph, IRealTimePathfinding pathfindingAlgorithm, long minTimeStep) {
         this.graph = graph;
-        this.pathfindingAlgorithm = pathfindingAlgorithm;
+        this.pathAlgorithms = new ArrayList<>();
+        this.pathAlgorithms.add(pathfindingAlgorithm);
+        this.minTimePathfinding = minTimeStep;
+    }
+
+    public PathGenerator(WeightedGraph graph, ArrayList<IRealTimePathfinding> pathfindingAlgorithms, long minTimeStep) {
+        this.graph = graph;
+        this.pathAlgorithms = pathfindingAlgorithms;
         this.minTimePathfinding = minTimeStep;
     }
 
@@ -39,7 +50,7 @@ public class PathGenerator {
         //setup timer path
         TimerTask recurringPathfinding = new TaskRandomPath();
         //repeat
-        timer.schedule(recurringPathfinding,frequencyRandomPathCalculator * 1000);
+        timer.schedule(recurringPathfinding,delay * 1000);
     }
 
     private void startRealTimePathfinding(Node start, Node goal, long minStepTime) throws PathNotFoundException {
@@ -48,39 +59,51 @@ public class PathGenerator {
         this.goal = goal;
         this.current = start;
 
-        pathfindingAlgorithm.beginPathfinding(start, goal);
+        System.out.println("Start Pathfinding same path");
+        //For each registered algorithms
+        for (IRealTimePathfinding algorithm : pathAlgorithms) {
+            currentlyUsedAlgorithm = algorithm;
+            //TODO : STRING
 
-        while (!pathfindingAlgorithm.hasFinished()) {
+            algorithm.beginPathfinding(start, goal);
 
-            long startTime = System.currentTimeMillis();
+            while (!algorithm.hasFinished()) {
 
-            this.current = pathfindingAlgorithm.getNextStep();
+                //Used to force min step lenght
+                long startTime = System.currentTimeMillis();
+
+                //execution de l'agorithme
+                this.current = algorithm.getNextStep();
+                notifyObserver.run(); //Notification vers la partie graphique
+
+                //Force min step length to monitor execution
+                long timeStepElapsed = System.currentTimeMillis() - startTime;
+
+                long timeRemaining = minStepTime - timeStepElapsed;
+                if (timeRemaining > 0) {
+                    try {
+                        Thread.sleep(timeRemaining);
+                    }
+                    catch (InterruptedException ex) {
+                        System.out.println(ex.toString());
+                        ex.printStackTrace();
+                    }
+                }
+            }
 
             notifyObserver.run();
 
-            long timeStepElapsed = System.currentTimeMillis() - startTime;
-
-            long timeRemaining = minStepTime - timeStepElapsed;
-            if (timeRemaining > 0) {
-                try {
-                    Thread.sleep(timeRemaining);
-                }
-                catch (InterruptedException ex) {
-                    System.out.println(ex.toString());
-                    ex.printStackTrace();
-                }
-            }
+            System.out.println(algorithm.getLog().toString());
         }
 
-        notifyObserver.run();
-
-        System.out.println(pathfindingAlgorithm.getLog().toString());
+        System.out.println("End Pathfindings");
+        //TODO : Comparer logs
 
     }
 
 
     public IRealTimePathfinding getPathfindingAlgorithm() {
-        return pathfindingAlgorithm;
+        return currentlyUsedAlgorithm;
     }
 
     public INode getStart() {
@@ -109,7 +132,7 @@ public class PathGenerator {
 
             }
             catch (PathNotFoundException pnfe) {
-                System.out.println("AStar : Path not found!");
+                System.out.println("There's no path between the two nodes !");
             }
             catch (Exception ex) {
                 System.out.println("Error running thread " + ex.getMessage());

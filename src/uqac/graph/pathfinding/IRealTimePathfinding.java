@@ -19,7 +19,8 @@ public interface IRealTimePathfinding {
 
     boolean hasFinished();
 
-    Path getPath();
+    Path getPathToDisplay();
+    Path getPathWalked();
 
     Collection<? extends INode> getVisited();
 

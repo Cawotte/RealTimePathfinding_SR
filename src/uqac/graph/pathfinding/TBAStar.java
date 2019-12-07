@@ -21,6 +21,7 @@ public class TBAStar implements IRealTimePathfinding {
 
     private Path<NodeAStar> pathNew;
     private Path<NodeAStar> pathFollow;
+    private Path<Node> pathWalked;
 
     private boolean solutionFound = false;
     private boolean solutionFoundAndTraced = false;
@@ -49,7 +50,6 @@ public class TBAStar implements IRealTimePathfinding {
     public void beginPathfinding(Node start, Node goal) {
 
 
-        log.startLogging();
 
         this.solutionFound = false;
         this.solutionFoundAndTraced = false;
@@ -72,12 +72,18 @@ public class TBAStar implements IRealTimePathfinding {
             }
         );
 
+        this.pathFollow = new Path<>();
+        this.pathNew = new Path<>();
+        this.pathWalked = new Path<>();
+
         this.start = new NodeAStar(start);
         this.goal = new NodeAStar(goal);
         this.currentAgentNode = this.start;
 
 
         openSet.add(this.start);
+
+        log.startLogging();
 
     }
 
@@ -90,7 +96,7 @@ public class TBAStar implements IRealTimePathfinding {
         executionPhase();
 
         if (hasFinished()) {
-            log.finishLogging(pathFollow);
+            log.finishLogging(pathWalked);
         }
 
         log.addStep();
@@ -103,9 +109,15 @@ public class TBAStar implements IRealTimePathfinding {
         return goal.equals(currentAgentNode);
     }
 
+
     @Override
-    public Path getPath() {
-        return pathNew;
+    public Path getPathToDisplay() {
+        return pathFollow;
+    }
+
+    @Override
+    public Path getPathWalked() {
+        return pathWalked;
     }
 
     @Override
@@ -226,6 +238,9 @@ public class TBAStar implements IRealTimePathfinding {
         }
 
         lastAgentNode = currentAgentNode;
+
+        //Register every steps done
+        pathWalked.addNodeAtBeginning(currentAgentNode.node);
 
 
     }

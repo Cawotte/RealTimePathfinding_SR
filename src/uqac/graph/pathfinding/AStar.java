@@ -132,7 +132,12 @@ public class AStar implements IRealTimePathfinding {
     }
 
     @Override
-    public Path getPath() {
+    public Path getPathToDisplay() {
+        return path;
+    }
+
+    @Override
+    public Path getPathWalked() {
         return path;
     }
 

@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 import java.util.function.BiFunction;
 
 public class Main extends JFrame implements MouseListener, MouseMotionListener {
@@ -37,12 +38,12 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
     //PATHFINDING CHOICE
     // 0 = A*, 1 = TAB*
-    static final int PATHFINDING_CHOICE = 0;
+    static final int PATHFINDING_CHOICE = 3;
 
     //Nombre de milliseconde minimal par étape de l'algorithme.
     //Mettre 0 pour la performance,
     //et plus entre 10 et 100 pour voir le déroulement de l'algo avec l'affichage
-    static final int MAX_SPEED_ALGORITHM = 0;
+    static final int MIN_LENGHT_STEP = 0;
 
     //PATHFINDING TAB* PARAMETERS
     static final int MAX_STEP_EXPANSION = 100;
@@ -54,6 +55,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     private PathGenerator pathfindingGenerator;
 
     private IRealTimePathfinding realTimePathfinding;
+    private ArrayList<IRealTimePathfinding> pathAlgorithms = new ArrayList<>();
     private BiFunction<Node, Node, Float> heuristics = Heuristics::euclidianDistance;
 
     public Main() {
@@ -77,16 +79,22 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
         // SETUP PATHFINDING
         if (PATHFINDING_CHOICE == 0) {
-            realTimePathfinding = new AStar(heuristics);
+            this.pathAlgorithms.add(new AStar(heuristics));
+        }
+        else if (PATHFINDING_CHOICE == 1) {
+            this.pathAlgorithms.add(new TBAStar(heuristics,
+                    MAX_STEP_EXPANSION,
+                    MAX_STEP_BACKTRACKING));
         }
         else {
-            realTimePathfinding = new TBAStar(heuristics,
+            this.pathAlgorithms.add(new AStar(heuristics));
+            this.pathAlgorithms.add(new TBAStar(heuristics,
                     MAX_STEP_EXPANSION,
-                    MAX_STEP_BACKTRACKING);
+                    MAX_STEP_BACKTRACKING));
         }
 
 
-        this.pathfindingGenerator = new PathGenerator(graph, realTimePathfinding, MAX_SPEED_ALGORITHM);
+        this.pathfindingGenerator = new PathGenerator(graph, pathAlgorithms, MIN_LENGHT_STEP);
 
 
 
@@ -138,7 +146,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
     private void updateAndRepaintGraph() {
 
-        canvas.setPath(pathfindingGenerator.getPathfindingAlgorithm().getPath());
+        canvas.setPath(pathfindingGenerator.getPathfindingAlgorithm().getPathToDisplay());
         canvas.setVisited(pathfindingGenerator.getPathfindingAlgorithm().getVisited());
         canvas.setStart(pathfindingGenerator.getStart());
         canvas.setGoal(pathfindingGenerator.getGoal());

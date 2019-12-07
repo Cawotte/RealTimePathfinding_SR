@@ -1,6 +1,8 @@
 package uqac.graph;
 
 
+import uqac.graph.pathfinding.NodeAStar;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
