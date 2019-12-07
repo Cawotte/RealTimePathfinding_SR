@@ -18,14 +18,14 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     // Define constants
 
     //GRAPH CONSTANT
-    static final int NB_NODES = 10000;
+    static final int NB_NODES = 1000000;
     static final Vector2 RAND_OFFSET = new Vector2(0.3f, 0.3f);
     static final boolean HAS_DIAGONALS = true;
     static final float PROBABILITY_DISABLE_EDGE = 0.3f;
 
     //CANVAS GRAPH CONSTANT
 
-    static final boolean GRAPHICS_ENABLED = true;
+    static final boolean GRAPHICS_ENABLED = false;
 
     static final int CANVAS_WIDTH  = 960;
     static final int CANVAS_HEIGHT = 600;
@@ -37,12 +37,12 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
     //PATHFINDING CHOICE
     // 0 = A*, 1 = TAB*
-    static final int PATHFINDING_CHOICE = 1;
+    static final int PATHFINDING_CHOICE = 0;
 
     //Nombre de milliseconde minimal par étape de l'algorithme.
     //Mettre 0 pour la performance,
     //et plus entre 10 et 100 pour voir le déroulement de l'algo avec l'affichage
-    static final int MAX_SPEED_ALGORITHM = 100;
+    static final int MAX_SPEED_ALGORITHM = 0;
 
     //PATHFINDING TAB* PARAMETERS
     static final int MAX_STEP_EXPANSION = 100;
@@ -66,7 +66,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
         int nbNodesY = (int)Math.sqrt(NB_NODES / aspectRatio);
         int nbNodesX = (int) (nbNodesY * aspectRatio);
 
-        System.out.println("(" + nbNodesX + ", " + nbNodesY + ") = " + nbNodesX * nbNodesY);
+        System.out.println("Graph Size : (" + nbNodesX + ", " + nbNodesY + ") = " + nbNodesX * nbNodesY + " nodes.");
 
         //Initialise le graph
        WeightedGraph graphInit = GraphFactory.generateGridGraph(

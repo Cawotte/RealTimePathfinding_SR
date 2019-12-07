@@ -9,13 +9,20 @@ public class LogPathfinding {
 
     private static final long MEGABYTE = 1024L * 1024L;
 
-    private long startingTime;
-    private long cumulatedTimeElapsed;
-    private long totalTime;
-
+    //logs
     private ArrayList<Long> stepTime = new ArrayList<>();
     private ArrayList<Long> stepMemory = new ArrayList<>();
 
+    //Time
+    private long startingTime;
+    private long cumulatedTimeElapsed;
+    private long totalTime;
+    //Step time
+    private long shortestStep;
+    private long longestStep;
+    private long averageStep;
+
+    //Memory
     private long startingMemory;
     private long maxMemory;
 
@@ -26,12 +33,18 @@ public class LogPathfinding {
         startingMemory = getUsedMemory();
 
         //Reset values
+
+        //Logs
         stepTime = new ArrayList<>();
         stepMemory = new ArrayList<>();
         cumulatedTimeElapsed = 0L;
         maxMemory = 0L;
 
-        //Add Step 0
+        //step times
+        this.shortestStep = Long.MAX_VALUE;
+        this.longestStep = Long.MIN_VALUE;
+        this.averageStep = 0L;
+
     }
 
     public void addStep() {
@@ -41,6 +54,12 @@ public class LogPathfinding {
         stepTime.add(timeElapsed);
         cumulatedTimeElapsed += timeElapsed;
 
+        if (timeElapsed > longestStep) {
+            longestStep = timeElapsed;
+        }
+        if (timeElapsed < shortestStep) {
+            shortestStep = timeElapsed;
+        }
 
         //Memory usage since beginning
         long memoryUsage = getUsedMemory() - startingMemory;
@@ -55,15 +74,26 @@ public class LogPathfinding {
         addStep();
         totalTime = System.currentTimeMillis() - startingTime;
         this.path = path;
+
+        //Get mean steps
+        this.averageStep = 0;
+        for (int i = 0; i < stepTime.size(); i++) {
+            this.averageStep += stepTime.get(i);
+        }
+        this.averageStep = this.averageStep / stepTime.size();
+
+        //Garbage collection at end of logging
+        Runtime.getRuntime().gc();
     }
 
     @Override
     public String toString() {
         String str = "";
-        str += "Nb Steps : " + stepTime.size() + "\n";
-        str += "Path Lenght : " + path.getSize() + "\n";
-        str += "Total Execution Time : " + totalTime + "ms\n";
-        str += "Max Memory Usage : " + maxMemory + " bytes / " + bytesToMegabytes(maxMemory) + " Mb\n";
+        str += "Iterations : " + stepTime.size() + "\n";
+        str += "Path Lenght : " + path.getSize() + ", Cost : " + path.getCost() + "\n";
+        str += "Total Time : " + totalTime + "ms\n";
+        str += "Average Step : " + averageStep + "ms, Longest Step : " + longestStep + "ms, Shortest Step : " + shortestStep + "ms\n";
+        str += "Memory Usage : " + maxMemory + " bytes / " + bytesToMegabytes(maxMemory) + " Mb\n";
 
         return str;
     }
