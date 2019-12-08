@@ -1,7 +1,9 @@
 package uqac.graph.pathfinding;
 
+import javafx.css.converter.DeriveColorConverter;
 import uqac.graph.INode;
 import uqac.graph.Node;
+import uqac.graph.Vector2;
 import uqac.graph.pathfinding.logs.LogPathfinding;
 
 import java.text.DecimalFormat;
@@ -60,10 +62,12 @@ public class LRTAStar implements IRealTimePathfinding{
     public Node getNextStep() {
 
         ArrayList<NodeLRTA> frontier = new ArrayList<>();
+        ArrayList<Vector2> frontierPos = new ArrayList<>();
 
         NodeLRTA bestChoice = null;
 
         frontier.add(currentAgentNode);
+        frontierPos.add(currentAgentNode.getPosition());
 
 
         //reset GScore to extend from current
@@ -95,20 +99,18 @@ public class LRTAStar implements IRealTimePathfinding{
 
             for (Node neigh : current.node.getNeighbors()) {
 
-                //Initialize all neighbors as NodeAStars.
-
-                NodeLRTA neighbor = new NodeLRTA(neigh);
 
                 //We skip neighbors already computed
-                if (frontier.contains(neighbor)) {
+                if (frontierPos.contains(neigh.position)) {
                     continue;
                 }
+
+                NodeLRTA neighbor = new NodeLRTA(neigh);
 
                 int index = updatedNodes.indexOf(neighbor);
 
                 //That node already exists
                 if (index >= 0) {
-                    System.out.println("Already exists!");
                     neighbor = updatedNodes.get(index);
                     neighbor.GScore = current.GScore + current.node.getCostToNeighbor(neighbor.node);
                     neighbor.parent = current;
@@ -126,14 +128,18 @@ public class LRTAStar implements IRealTimePathfinding{
                 //If their G is less than GMax, add them to the frontier.
                 if (neighbor.depth <= lookAhead) {
                     frontier.add(neighbor);
+                    frontierPos.add(neighbor.node.position);
                 }
+
             }
 
         } while( !frontier.isEmpty() );
 
         //Update current node with new known more precise heuristic
         currentAgentNode.HScore = bestChoice.getFScore();
-
+        if (!updatedNodes.contains(currentAgentNode)) {
+            updatedNodes.add(currentAgentNode);
+        }
 
         //We found the next step to take to move toward that best choice.
         while (!currentAgentNode.equals(bestChoice.parent)) {
@@ -195,16 +201,6 @@ public class LRTAStar implements IRealTimePathfinding{
         }
 
 
-        @Override
-        public String toString() {
-
-            DecimalFormat df = new DecimalFormat("0.00");
-
-            String str = "";
-            str += "(" + df.format(getPosition().x) + ", " + df.format(getPosition().y) + ")";
-            //str += ", (" + GScore + ", " + HScore + ", " + getFScore() + ")";
-            return str;
-        }
 
     }
 }

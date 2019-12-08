@@ -22,7 +22,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     static final int NB_NODES = 1000;
     static final Vector2 RAND_OFFSET = new Vector2(0.3f, 0.3f);
     static final boolean HAS_DIAGONALS = true;
-    static final float PROBABILITY_DISABLE_EDGE = 0.3f;
+    static final float PROBABILITY_DISABLE_EDGE = 0.4f;
 
     //CANVAS GRAPH CONSTANT
 
@@ -81,8 +81,8 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
         // SETUP PATHFINDING
         this.pathAlgorithms.add(new AStar(heuristics));
-        this.pathAlgorithms.add(new TBAStar(heuristics, MAX_STEP_EXPANSION, MAX_STEP_BACKTRACKING));
         this.pathAlgorithms.add(new LRTAStar(heuristics, LOOKAHEAD));
+        this.pathAlgorithms.add(new TBAStar(heuristics, MAX_STEP_EXPANSION, MAX_STEP_BACKTRACKING));
 
         this.pathfindingGenerator = new PathGenerator(graph, pathAlgorithms, MIN_LENGHT_STEP);
 

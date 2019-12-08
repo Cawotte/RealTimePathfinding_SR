@@ -62,6 +62,9 @@ public class PathGenerator {
         System.out.println("START NEW PATH CALCULATION\n");
         //For each registered algorithms
         for (IRealTimePathfinding algorithm : pathAlgorithms) {
+
+            Runtime.getRuntime().gc();
+
             currentlyUsedAlgorithm = algorithm;
 
             System.out.println(algorithm.toString());

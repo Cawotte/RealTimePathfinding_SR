@@ -74,11 +74,11 @@ public class NodeAStar implements INode {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (obj == null) {
             return false;
         }
 
-        NodeAStar otherNode = (NodeAStar)obj;
+        NodeAStar otherNode = (NodeAStar) obj;
 
         return node.equals(otherNode.node);
     }
