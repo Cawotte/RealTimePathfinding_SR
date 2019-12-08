@@ -59,17 +59,18 @@ public class PathGenerator {
         this.goal = goal;
         this.current = start;
 
-        System.out.println("Start Pathfinding same path");
+        System.out.println("START NEW PATH CALCULATION\n");
         //For each registered algorithms
         for (IRealTimePathfinding algorithm : pathAlgorithms) {
             currentlyUsedAlgorithm = algorithm;
-            //TODO : STRING
+
+            System.out.println(algorithm.toString());
 
             algorithm.beginPathfinding(start, goal);
 
             while (!algorithm.hasFinished()) {
 
-                //Used to force min step lenght
+                //Used to force min step length
                 long startTime = System.currentTimeMillis();
 
                 //execution de l'agorithme
@@ -96,7 +97,7 @@ public class PathGenerator {
             System.out.println(algorithm.getLog().toString());
         }
 
-        System.out.println("End Pathfindings");
+        System.out.println("\nEND PATH CALCULATIONS\n");
         //TODO : Comparer logs
 
     }

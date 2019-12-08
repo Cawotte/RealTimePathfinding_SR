@@ -151,38 +151,8 @@ public class AStar implements IRealTimePathfinding {
         return closedSet;
     }
 
-    private NodeAStar getNodeWithMinF(HashSet<NodeAStar> openSet) {
-        NodeAStar bestNode = null;
-        float minF = Float.MAX_VALUE;
-        ArrayList<NodeAStar> equalsF = new ArrayList<>();
-
-        for (NodeAStar node : openSet) {
-            if (bestNode == null) {
-                bestNode = node;
-                minF = node.getFScore();
-            }
-
-            if (node.getFScore() < minF) {
-                bestNode = node;
-                minF = node.getFScore();
-
-                equalsF = new ArrayList<>();
-                equalsF.add(bestNode);
-            }
-            else if (node.getFScore() == minF) {
-
-                equalsF.add(node);
-            }
-        }
-
-        float minH = Float.MAX_VALUE;
-        for (NodeAStar node : equalsF) {
-            if (node.HScore < minH) {
-                bestNode = node;
-                minH = node.HScore;
-            }
-        }
-
-        return bestNode;
+    @Override
+    public String toString() {
+        return "A*";
     }
 }

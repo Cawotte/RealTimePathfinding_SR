@@ -72,13 +72,15 @@ public class TBAStar implements IRealTimePathfinding {
             }
         );
 
-        this.pathFollow = new Path<>();
-        this.pathNew = new Path<>();
-        this.pathWalked = new Path<>();
 
         this.start = new NodeAStar(start);
         this.goal = new NodeAStar(goal);
         this.currentAgentNode = this.start;
+
+        this.pathFollow = new Path<>();
+        this.pathNew = new Path<>();
+        this.pathWalked = new Path<>();
+        this.pathWalked.addNodeAtBeginning(start);
 
 
         openSet.add(this.start);
@@ -128,6 +130,11 @@ public class TBAStar implements IRealTimePathfinding {
     @Override
     public LogPathfinding getLog() {
         return log;
+    }
+
+    @Override
+    public String toString() {
+        return "TBA* Ne-" + nbStepExpansion + " Nt-" + nbStepBacktracking;
     }
 
     private void planningPhase() throws PathNotFoundException {
