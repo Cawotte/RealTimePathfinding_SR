@@ -8,6 +8,7 @@ import uqac.graph.pathfinding.Path;
 import uqac.graph.pathfinding.PathNotFoundException;
 
 import java.lang.reflect.Array;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
@@ -100,9 +101,10 @@ public class PathGenerator {
             System.out.println(algorithm.getLog().toString());
         }
 
+        comparePathsFound();
+
         System.out.println("\nEND PATH CALCULATIONS\n");
         //TODO : Comparer logs
-
     }
 
 
@@ -122,6 +124,18 @@ public class PathGenerator {
         return current;
     }
 
+    private void comparePathsFound() {
+
+        Path optimalPath = pathAlgorithms.get(0).getPathWalked();
+
+        DecimalFormat df = new DecimalFormat("##.##%");
+
+        System.out.println("Comparing different algorithms Suboptimality : ");
+        for (IRealTimePathfinding algorithm : pathAlgorithms) {
+            float suboptimality = algorithm.getPathWalked().compareSuboptimality(optimalPath);
+            System.out.println("Suboptimality : " + df.format(suboptimality) + "% - " + algorithm.toString() );
+        }
+    }
 
     class TaskRandomPath extends TimerTask {
 
