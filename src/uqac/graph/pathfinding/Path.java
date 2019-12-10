@@ -77,7 +77,8 @@ public class Path<T extends INode> {
      * @return
      */
     public float compareSuboptimality(Path optimalPath) {
-        return ((getCost() / optimalPath.getCost() ) - 1f) * 100f;
+
+        return ((getCost() / optimalPath.getCost() ) - 1f);
     }
 
     @Override

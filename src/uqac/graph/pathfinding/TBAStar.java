@@ -49,8 +49,6 @@ public class TBAStar implements IRealTimePathfinding {
     @Override
     public void beginPathfinding(Node start, Node goal) {
 
-
-
         this.solutionFound = false;
         this.solutionFoundAndTraced = false;
         this.doneTrace = true;
@@ -100,8 +98,10 @@ public class TBAStar implements IRealTimePathfinding {
         if (hasFinished()) {
             log.finishLogging(pathWalked);
         }
+        else {
+            log.addStep();
+        }
 
-        log.addStep();
 
         return currentAgentNode.node;
     }
@@ -189,7 +189,7 @@ public class TBAStar implements IRealTimePathfinding {
 
         if (openSet.size() == 0) {
 
-            log.finishLogging(pathFollow);
+            log.finishLogging(pathWalked);
             throw new PathNotFoundException(start.node, goal.node);
         }
 

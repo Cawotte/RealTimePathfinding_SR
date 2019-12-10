@@ -66,10 +66,6 @@ public class PathGenerator {
 
             Runtime.getRuntime().gc();
 
-            if (manualContinue) {
-                waitKeypressToContinue();
-            }
-
 
             currentlyUsedAlgorithm = algorithm;
 
@@ -142,7 +138,7 @@ public class PathGenerator {
         System.out.println("Comparing different algorithms Suboptimality : ");
         for (IRealTimePathfinding algorithm : pathAlgorithms) {
             float suboptimality = algorithm.getPathWalked().compareSuboptimality(optimalPath);
-            System.out.println("Suboptimality : " + df.format(suboptimality) + "% - " + algorithm.toString() );
+            System.out.println("Suboptimality : " + df.format(suboptimality) + " - " + algorithm.toString() );
         }
     }
 

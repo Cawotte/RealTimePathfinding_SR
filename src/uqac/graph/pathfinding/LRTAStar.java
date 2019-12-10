@@ -94,6 +94,7 @@ public class LRTAStar implements IRealTimePathfinding{
 
             NodeLRTA current = frontier.poll();
 
+
             if (current.equals(goal))  {
                 bestChoice = current;
                 break; //There can't be anything better than the goal duh.

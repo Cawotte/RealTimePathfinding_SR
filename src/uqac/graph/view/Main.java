@@ -19,14 +19,14 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     // Define constants
 
     //GRAPH CONSTANT
-    static final int NB_NODES = 1000;
-    static final Vector2 RAND_OFFSET = new Vector2(0f, 0f);
+    static final int NB_NODES = 1000000;
+    static final Vector2 RAND_OFFSET = new Vector2(0.2f, 0.2f);
     static final boolean HAS_DIAGONALS = true;
-    static final float PROBABILITY_DISABLE_EDGE = 0.4f;
+    static final float PROBABILITY_DISABLE_EDGE = 0.3f;
 
     //CANVAS GRAPH CONSTANT
 
-    static final boolean GRAPHICS_ENABLED = true;
+    static final boolean GRAPHICS_ENABLED = false;
     static final boolean DISPLAY_VISITED = true; //Afficher les noeuds visités? (Jaune). Peut entrainer des erreurs d'accès en
         //true sur des très gros graph.
     static final boolean MANUAL_CONTINUE = true;
@@ -35,19 +35,17 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     static final int CANVAS_HEIGHT = 600;
     static final Vector2 GRAPH_OFFSET = new Vector2(50, 50);
 
-
-
     //Nombre de milliseconde minimal par étape de l'algorithme.
     //Mettre 0 pour la performance,
     //et plus entre 10 et 100 pour voir le déroulement de l'algo avec l'affichage
-    static final int MIN_LENGHT_STEP = 100;
+    static final int MIN_LENGHT_STEP = 0;
 
     //PATHFINDING TAB* PARAMETERS
-    static final int MAX_STEP_EXPANSION = 1000;
-    static final int MAX_STEP_BACKTRACKING = 10000;
+    static final int MAX_STEP_EXPANSION = 100;
+    static final int MAX_STEP_BACKTRACKING = 500;
 
     //LRTA* PARAMETERS
-    static final int LOOKAHEAD = 15;
+    static final int LOOKAHEAD = 5;
 
     private GraphCanvas canvas;
 
@@ -55,7 +53,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     private PathGenerator pathfindingGenerator;
 
     private ArrayList<IRealTimePathfinding> pathAlgorithms = new ArrayList<>();
-    private BiFunction<Node, Node, Float> heuristics = Heuristics::manhattanDistance;
+    private BiFunction<Node, Node, Float> heuristics = Heuristics::euclidianDistance;
 
     public Main() {
 

@@ -56,9 +56,11 @@ public class AStar implements IRealTimePathfinding {
                 new Comparator<NodeAStar>() {
                     @Override
                     public int compare(NodeAStar node0, NodeAStar node1) {
+
+                        //lowest f has priority
                         int comp = Float.compare(node0.getFScore(), node1.getFScore());
 
-                        //comp = 0 si les F sont égaux
+                        //lowest G has priority
                         if (comp == 0)
                             return Float.compare(node0.HScore, node1.HScore);
                         else {
