@@ -61,7 +61,22 @@ public class LRTAStar implements IRealTimePathfinding{
     @Override
     public Node getNextStep() {
 
-        ArrayList<NodeLRTA> frontier = new ArrayList<>();
+        PriorityQueue<NodeLRTA> frontier = new PriorityQueue<NodeLRTA>(
+                new Comparator<NodeLRTA>() {
+                    @Override
+                    public int compare(NodeLRTA node0, NodeLRTA node1) {
+
+                        //lowest G Has priority
+                        int comp = Float.compare(node0.GScore, node1.GScore);
+
+                        //On equal G, take lowest depth
+                        if (comp == 0)
+                             return Integer.compare(node0.depth, node1.depth);
+                        else {
+                            return comp;
+                        }
+                    }
+                });
         ArrayList<Vector2> frontierPos = new ArrayList<>();
 
         NodeLRTA bestChoice = null;
@@ -74,14 +89,16 @@ public class LRTAStar implements IRealTimePathfinding{
         currentAgentNode.GScore = 0f;
         currentAgentNode.depth = 0;
 
+
         do {
 
-            NodeLRTA current = frontier.remove(0);
+            NodeLRTA current = frontier.poll();
 
             if (current.equals(goal))  {
                 bestChoice = current;
                 break; //There can't be anything better than the goal duh.
             }
+            //Only look for furthest depth
             else if (current.depth == lookAhead) {
 
                 //Is it new best ?
