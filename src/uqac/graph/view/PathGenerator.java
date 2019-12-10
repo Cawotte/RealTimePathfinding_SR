@@ -9,10 +9,7 @@ import uqac.graph.pathfinding.PathNotFoundException;
 
 import java.lang.reflect.Array;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class PathGenerator {
 
@@ -23,6 +20,8 @@ public class PathGenerator {
 
     private long minTimePathfinding;
 
+    private boolean manualContinue;
+    private Scanner sc = new Scanner(System.in);
     private int delay = 2;
 
     public Runnable notifyObserver;
@@ -38,10 +37,11 @@ public class PathGenerator {
         this.minTimePathfinding = minTimeStep;
     }
 
-    public PathGenerator(WeightedGraph graph, ArrayList<IRealTimePathfinding> pathfindingAlgorithms, long minTimeStep) {
+    public PathGenerator(WeightedGraph graph, ArrayList<IRealTimePathfinding> pathfindingAlgorithms, long minTimeStep, boolean manualContinue) {
         this.graph = graph;
         this.pathAlgorithms = pathfindingAlgorithms;
         this.minTimePathfinding = minTimeStep;
+        this.manualContinue = manualContinue;
     }
 
     public void scheduleNextTimer() {
@@ -65,6 +65,11 @@ public class PathGenerator {
         for (IRealTimePathfinding algorithm : pathAlgorithms) {
 
             Runtime.getRuntime().gc();
+
+            if (manualContinue) {
+                waitKeypressToContinue();
+            }
+
 
             currentlyUsedAlgorithm = algorithm;
 
@@ -104,7 +109,7 @@ public class PathGenerator {
         comparePathsFound();
 
         System.out.println("\nEND PATH CALCULATIONS\n");
-        //TODO : Comparer logs
+
     }
 
 
@@ -124,6 +129,10 @@ public class PathGenerator {
         return current;
     }
 
+    private void waitKeypressToContinue() {
+        System.out.println("Wait keypress to continue...");
+        sc.next();
+    }
     private void comparePathsFound() {
 
         Path optimalPath = pathAlgorithms.get(0).getPathWalked();
@@ -155,6 +164,10 @@ public class PathGenerator {
             catch (Exception ex) {
                 System.out.println("Error running thread " + ex.getMessage());
                 ex.printStackTrace();
+            }
+
+            if (manualContinue) {
+                waitKeypressToContinue();
             }
 
             //relaunch

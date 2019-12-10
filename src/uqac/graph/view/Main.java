@@ -20,25 +20,22 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
     //GRAPH CONSTANT
     static final int NB_NODES = 1000;
-    static final Vector2 RAND_OFFSET = new Vector2(0.3f, 0.3f);
+    static final Vector2 RAND_OFFSET = new Vector2(0f, 0f);
     static final boolean HAS_DIAGONALS = true;
     static final float PROBABILITY_DISABLE_EDGE = 0.4f;
 
     //CANVAS GRAPH CONSTANT
 
     static final boolean GRAPHICS_ENABLED = true;
+    static final boolean DISPLAY_VISITED = true; //Afficher les noeuds visités? (Jaune). Peut entrainer des erreurs d'accès en
+        //true sur des très gros graph.
+    static final boolean MANUAL_CONTINUE = true;
 
     static final int CANVAS_WIDTH  = 960;
     static final int CANVAS_HEIGHT = 600;
     static final Vector2 GRAPH_OFFSET = new Vector2(50, 50);
 
-    //Afficher les noeuds visités? (Jaune). Peut entrainer des erreurs d'accès en
-    //true sur des très gros graph.
-    static final boolean DISPLAY_VISITED = true;
 
-    //PATHFINDING CHOICE
-    // 0 = A*, 1 = TAB*
-    static final int PATHFINDING_CHOICE = 3;
 
     //Nombre de milliseconde minimal par étape de l'algorithme.
     //Mettre 0 pour la performance,
@@ -50,7 +47,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     static final int MAX_STEP_BACKTRACKING = 10000;
 
     //LRTA* PARAMETERS
-    static final int LOOKAHEAD = 10;
+    static final int LOOKAHEAD = 15;
 
     private GraphCanvas canvas;
 
@@ -58,7 +55,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     private PathGenerator pathfindingGenerator;
 
     private ArrayList<IRealTimePathfinding> pathAlgorithms = new ArrayList<>();
-    private BiFunction<Node, Node, Float> heuristics = Heuristics::euclidianDistance;
+    private BiFunction<Node, Node, Float> heuristics = Heuristics::manhattanDistance;
 
     public Main() {
 
@@ -81,10 +78,10 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
         // SETUP PATHFINDING
         this.pathAlgorithms.add(new AStar(heuristics));
-        this.pathAlgorithms.add(new LRTAStar(heuristics, LOOKAHEAD));
         this.pathAlgorithms.add(new TBAStar(heuristics, MAX_STEP_EXPANSION, MAX_STEP_BACKTRACKING));
+        this.pathAlgorithms.add(new LRTAStar(heuristics, LOOKAHEAD));
 
-        this.pathfindingGenerator = new PathGenerator(graph, pathAlgorithms, MIN_LENGHT_STEP);
+        this.pathfindingGenerator = new PathGenerator(graph, pathAlgorithms, MIN_LENGHT_STEP, MANUAL_CONTINUE);
 
 
 
