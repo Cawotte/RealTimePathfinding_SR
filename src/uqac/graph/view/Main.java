@@ -16,29 +16,51 @@ import java.util.function.BiFunction;
 
 public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
+
     // Define constants
 
     //GRAPH CONSTANT
-    static final int NB_NODES = 1000000;
+
+    //Nombre de noeuds du graph
+    static final int NB_NODES = 1000;
+
+    //Offset (x,y) aléatoire sur lesquels chaque point de la grille seronts déplacés
     static final Vector2 RAND_OFFSET = new Vector2(0.2f, 0.2f);
+
+    //Connection diagonale entre les noeuds
     static final boolean HAS_DIAGONALS = true;
+
+    //Probabilité que chaque noeud disparaissent après génération du Graph,
+    //0 = Aucun obstacle, tout est parfaitement connecté
+    //0.5 = La moitié des connections disparaissent, donnant beaucoup d'obstacles.
     static final float PROBABILITY_DISABLE_EDGE = 0.3f;
 
     //CANVAS GRAPH CONSTANT
 
-    static final boolean GRAPHICS_ENABLED = false;
-    static final boolean DISPLAY_VISITED = true; //Afficher les noeuds visités? (Jaune). Peut entrainer des erreurs d'accès en
-        //true sur des très gros graph.
-    static final boolean MANUAL_CONTINUE = true;
+    //Activer/Désactiver l'affichage graphique, activer pour suivre l'exécution, mais à désactiver pour de vrai évaluation de performances
+    //sur de grand graph
+    static final boolean GRAPHICS_ENABLED = true;
 
+    //Afficher les noeuds visités? (Jaune). Peut entrainer des erreurs d'accès en
+    //true sur des très gros graph.
+    static final boolean DISPLAY_VISITED = true;
+
+    //Si vrai attend une entrée utilisateur avant chaque exécution, si faux continue automatiquement le calcul de nouveaux chemins.
+    static final boolean MANUAL_CONTINUE = false;
+
+    //Taille de la fenetre graphique
     static final int CANVAS_WIDTH  = 960;
     static final int CANVAS_HEIGHT = 600;
-    static final Vector2 GRAPH_OFFSET = new Vector2(50, 50);
+    //Taille de la bordure vide de la fenetre graphique
+    static final Vector2 GRAPH_OFFSET = new Vector2(200, 10);
 
     //Nombre de milliseconde minimal par étape de l'algorithme.
-    //Mettre 0 pour la performance,
-    //et plus entre 10 et 100 pour voir le déroulement de l'algo avec l'affichage
-    static final int MIN_LENGHT_STEP = 0;
+    //Mettre 0 pour la performance, et entre 10 et 100 pour voir le déroulement de l'algo avec l'affichage
+    static final int MIN_LENGHT_STEP = 100;
+
+    //HEURISTIC
+    //fonction heuristic utilisés, deux disponibles dans Heuristics : euclidianDistance et manhattanDistance
+    static final BiFunction<Node, Node, Float> heuristics = Heuristics::euclidianDistance;
 
     //PATHFINDING TAB* PARAMETERS
     static final int MAX_STEP_EXPANSION = 100;
@@ -47,20 +69,22 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     //LRTA* PARAMETERS
     static final int LOOKAHEAD = 5;
 
+
+
     private GraphCanvas canvas;
 
     private WeightedGraph graph;
     private PathGenerator pathfindingGenerator;
 
     private ArrayList<IRealTimePathfinding> pathAlgorithms = new ArrayList<>();
-    private BiFunction<Node, Node, Float> heuristics = Heuristics::euclidianDistance;
+
 
     public Main() {
 
         //DATA
 
         //Calcule le ratio H*L requis pour avoir un graph équidistant en fonction du nombre total de nodes
-        float aspectRatio = (float)CANVAS_WIDTH / (float)CANVAS_HEIGHT;
+        float aspectRatio = ((float)CANVAS_WIDTH - GRAPH_OFFSET.x * 2) / ((float)CANVAS_HEIGHT - GRAPH_OFFSET.y * 2);
 
         int nbNodesY = (int)Math.sqrt(NB_NODES / aspectRatio);
         int nbNodesX = (int) (nbNodesY * aspectRatio);
@@ -131,11 +155,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
     private void updateAndRepaintGraph() {
 
-        canvas.setPath(pathfindingGenerator.getPathfindingAlgorithm().getPathToDisplay());
-        canvas.setVisited(pathfindingGenerator.getPathfindingAlgorithm().getVisited());
-        canvas.setStart(pathfindingGenerator.getStart());
-        canvas.setGoal(pathfindingGenerator.getGoal());
-        canvas.setCurrent(pathfindingGenerator.getCurrent());
+        canvas.updateWithAlgorithm(pathfindingGenerator.getPathfindingAlgorithm());
         this.repaint();
     }
 

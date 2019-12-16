@@ -128,6 +128,21 @@ public class TBAStar implements IRealTimePathfinding {
     }
 
     @Override
+    public INode getStart() {
+        return start;
+    }
+
+    @Override
+    public INode getGoal() {
+        return goal;
+    }
+
+    @Override
+    public INode getCurrent() {
+        return currentAgentNode;
+    }
+
+    @Override
     public LogPathfinding getLog() {
         return log;
     }

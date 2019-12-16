@@ -16,9 +16,9 @@ public class LRTAStar implements IRealTimePathfinding{
 
     private int lookAhead;
 
-    private NodeLRTA currentAgentNode;
-    private NodeLRTA start;
-    private NodeLRTA goal;
+    private NodeLRTA currentAgentNode = null;
+    private NodeLRTA start = null;
+    private NodeLRTA goal = null;
 
     private BiFunction<Node, Node, Float> heuristic;
 
@@ -197,6 +197,21 @@ public class LRTAStar implements IRealTimePathfinding{
     @Override
     public Collection<? extends INode> getVisited() {
         return updatedNodes;
+    }
+
+    @Override
+    public INode getStart() {
+        return start;
+    }
+
+    @Override
+    public INode getGoal() {
+        return goal;
+    }
+
+    @Override
+    public INode getCurrent() {
+        return currentAgentNode;
     }
 
     @Override

@@ -39,6 +39,7 @@ public class GraphCanvas extends JPanel {
     private INode goal = null;
     private INode current = null;
     private Path path;
+    private String algorithmName = "";
 
     private Circle pointer = new Circle(0, 0, 5, Color.red);
 
@@ -59,7 +60,9 @@ public class GraphCanvas extends JPanel {
     public void paintComponent(Graphics g) {
 
         paintBaseGraph(g);
-        pointer.draw(g);
+
+        paintName(g);
+        //pointer.draw(g);
 
         if (displayVisited)
             paintVisited(g);
@@ -74,25 +77,16 @@ public class GraphCanvas extends JPanel {
 
     }
 
-    public void setPath(Path path) {
-        this.path = path;
+    public void updateWithAlgorithm(IRealTimePathfinding algorithm) {
+
+        this.path = algorithm.getPathToDisplay();
+        this.visited = algorithm.getVisited();
+        this.current = algorithm.getCurrent();
+        this.start = algorithm.getStart();
+        this.goal = algorithm.getCurrent();
+        this.algorithmName = algorithm.toString();
     }
 
-    public void setVisited(Collection<? extends INode> visited) {
-        this.visited = visited;
-    }
-
-    public void setCurrent(INode node) {
-        this.current = node;
-    }
-
-    public void setStart(INode node) {
-        this.start = node;
-    }
-
-    public void setGoal(INode node) {
-        this.goal = node;
-    }
     private void paintBaseGraph(Graphics g) {
 
         //Draw all nodes
@@ -101,6 +95,10 @@ public class GraphCanvas extends JPanel {
         }
 
         drawLink(g);
+    }
+
+    private void paintName(Graphics g) {
+        g.drawString(algorithmName, 25, 25);
     }
 
     private void paintVisited(Graphics g) {

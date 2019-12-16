@@ -24,6 +24,12 @@ public interface IRealTimePathfinding {
 
     Collection<? extends INode> getVisited();
 
+
+    INode getStart();
+    INode getGoal();
+    INode getCurrent();
+
+
     //Get Logs
     LogPathfinding getLog();
 

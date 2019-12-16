@@ -28,14 +28,6 @@ public class PathGenerator {
 
     private Node start;
     private Node goal;
-    private INode current;
-
-    public PathGenerator(WeightedGraph graph, IRealTimePathfinding pathfindingAlgorithm, long minTimeStep) {
-        this.graph = graph;
-        this.pathAlgorithms = new ArrayList<>();
-        this.pathAlgorithms.add(pathfindingAlgorithm);
-        this.minTimePathfinding = minTimeStep;
-    }
 
     public PathGenerator(WeightedGraph graph, ArrayList<IRealTimePathfinding> pathfindingAlgorithms, long minTimeStep, boolean manualContinue) {
         this.graph = graph;
@@ -58,7 +50,7 @@ public class PathGenerator {
 
         this.start = start;
         this.goal = goal;
-        this.current = start;
+        //this.current = start;
 
         System.out.println("START NEW PATH CALCULATION\n");
         //For each registered algorithms
@@ -79,7 +71,7 @@ public class PathGenerator {
                 long startTime = System.currentTimeMillis();
 
                 //execution de l'agorithme
-                this.current = algorithm.getNextStep();
+                algorithm.getNextStep(); // this.current =
                 notifyObserver.run(); //Notification vers la partie graphique
 
                 //Force min step length to monitor execution
@@ -113,22 +105,12 @@ public class PathGenerator {
         return currentlyUsedAlgorithm;
     }
 
-    public INode getStart() {
-        return start;
-    }
-
-    public INode getGoal() {
-        return goal;
-    }
-
-    public INode getCurrent() {
-        return current;
-    }
-
     private void waitKeypressToContinue() {
         System.out.println("Wait keypress to continue...");
         sc.next();
     }
+
+
     private void comparePathsFound() {
 
         Path optimalPath = pathAlgorithms.get(0).getPathWalked();

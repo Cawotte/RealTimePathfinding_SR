@@ -18,6 +18,9 @@ public class AStar implements IRealTimePathfinding {
 
     private LogPathfinding log = new LogPathfinding();
 
+    private NodeAStar start = null;
+    private NodeAStar goal = null;
+    private INode current = null;
 
     HashSet<NodeAStar> closedSet = new HashSet<>();
 
@@ -30,8 +33,9 @@ public class AStar implements IRealTimePathfinding {
     {
         log.startLogging();
 
-        NodeAStar start = new NodeAStar(startNode);
-        NodeAStar goal = new NodeAStar(goalNode);
+        start = new NodeAStar(startNode);
+        goal = new NodeAStar(goalNode);
+        this.current = start;
         NodeAStar current;
 
         //initialize new path
@@ -123,7 +127,8 @@ public class AStar implements IRealTimePathfinding {
     public Node getNextStep() {
 
         if (iterator.hasNext()) {
-            return iterator.next();
+            current = iterator.next();
+            return (Node)current;
         }
         return null;
     }
@@ -151,6 +156,21 @@ public class AStar implements IRealTimePathfinding {
     @Override
     public Collection<? extends INode> getVisited() {
         return closedSet;
+    }
+
+    @Override
+    public INode getStart() {
+        return start;
+    }
+
+    @Override
+    public INode getGoal() {
+        return goal;
+    }
+
+    @Override
+    public INode getCurrent() {
+        return current;
     }
 
     @Override
