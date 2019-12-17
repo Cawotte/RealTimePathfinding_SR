@@ -22,7 +22,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     //GRAPH CONSTANT
 
     //Nombre de noeuds du graph
-    static final int NB_NODES = 1000;
+    static final int NB_NODES = 100000;
 
     //Offset (x,y) aléatoire sur lesquels chaque point de la grille seronts déplacés
     static final Vector2 RAND_OFFSET = new Vector2(0.2f, 0.2f);
@@ -56,7 +56,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
     //Nombre de milliseconde minimal par étape de l'algorithme.
     //Mettre 0 pour la performance, et entre 10 et 100 pour voir le déroulement de l'algo avec l'affichage
-    static final int MIN_LENGHT_STEP = 100;
+    static final int MIN_LENGHT_STEP = 0;
 
     //HEURISTIC
     //fonction heuristic utilisés, deux disponibles dans Heuristics : euclidianDistance et manhattanDistance
@@ -69,7 +69,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     //LRTA* PARAMETERS
     static final int LOOKAHEAD = 5;
 
-
+    private String parametersString = "";
 
     private GraphCanvas canvas;
 
@@ -147,6 +147,8 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
             };
         }
 
+        parametersString = parametersToString(nbNodesX, nbNodesY);
+        canvas.setParametersText(parametersString);
 
         //Start generating random pathfinding
         pathfindingGenerator.scheduleNextTimer();
@@ -159,6 +161,38 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
         canvas.setLogText(pathfindingGenerator.getCumulatedLogText());
         canvas.setCmpText(pathfindingGenerator.getComparisonText());
         this.repaint();
+    }
+
+    private String parametersToString(int nbNodesX, int nbNodesY) {
+        String str = "GRAPH PARAMETERS :\n";
+
+        str += "Size : " + nbNodesX + "*" + nbNodesY + "\n";
+        str += "     = " + nbNodesX * nbNodesY + " Nodes\n";
+
+        str += "Rand Offset : " + RAND_OFFSET.toString() + "\n";
+        str += "Disabled Edge : " + String.format("%.0f%%", PROBABILITY_DISABLE_EDGE * 100f) + "\n";
+
+        if (HAS_DIAGONALS) {
+            str += "HAS diagonals\n";
+        }
+        if (DISPLAY_VISITED) {
+            str += "DISPLAY visited nodes\n";
+        }
+        if (MANUAL_CONTINUE) {
+            str += "Next Path : ON KEYPRESS\n";
+        }
+        else {
+            str += "Next Path : AUTO\n";
+        }
+
+        str += "Minimal Time-Step : " + MIN_LENGHT_STEP + "ms\n\n";
+
+        str += "ALGORITHMS :\n";
+        for (IRealTimePathfinding algo : pathAlgorithms) {
+            str += "  " + algo.toString() + "\n";
+        }
+
+        return str;
     }
 
     public static void main(String[] args) {

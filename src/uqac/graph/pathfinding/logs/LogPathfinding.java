@@ -109,6 +109,7 @@ public class LogPathfinding {
         Pair<String, Long> bestTime = new Pair<String, Long>(firstLog.algorithmName, firstLog.totalTime);
         Pair<String, Long> bestMemory = new Pair<String, Long>(firstLog.algorithmName, firstLog.maxMemory);
         Pair<String, Float> bestPath = new Pair<String, Float>(firstLog.algorithmName, firstLog.path.getCost());
+        Path bestWalkedPath = firstLog.path;
 
         for (LogPathfinding log : logs) {
 
@@ -139,6 +140,7 @@ public class LogPathfinding {
             //Best Path
             if (log.path.getCost() < bestPath.getValue()) {
                 bestPath = new Pair<>(log.algorithmName, log.path.getCost());
+                bestWalkedPath = log.path;
             }
             else if (log.path.getCost() == bestPath.getValue()) {
                 nbEqualPath++;
@@ -184,6 +186,14 @@ public class LogPathfinding {
         }
         cmp = cmp.concat(tab + bestTime.getKey() + "\n" + tab +  bestTime.getValue() + "ms\n");
 
+        //SUBOPTIMALITY
+
+
+        cmp += "SUBOPTIMALITY :\n";
+        for (LogPathfinding log : logs) {
+            float suboptimality = log.path.compareSuboptimality(bestWalkedPath);
+            cmp += tab + String.format("%.0f%%", suboptimality * 100f) + " - " + log.algorithmName + "\n";
+        }
         return cmp;
     }
 

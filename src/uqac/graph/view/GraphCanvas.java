@@ -48,6 +48,7 @@ public class GraphCanvas extends JPanel {
     private Path path;
     private String logText = "";
     private String cmpText = "";
+    private String parametersText = "";
 
 
     public GraphCanvas(WeightedGraph graph, int width, int height, int offsetWidth, int offsetHeight, boolean displayVisited) {
@@ -72,7 +73,8 @@ public class GraphCanvas extends JPanel {
         writeText(g, logText, xText, yText);
 
         //Write parameters and algo comparisons
-        writeText(g, cmpText, (int)this.maxBounds.x + xText, yText);
+        String totalStr = parametersText + "\n" + cmpText;
+        writeText(g, totalStr, (int)this.maxBounds.x + xText, yText);
 
         if (displayVisited)
             paintVisited(g);
@@ -101,6 +103,10 @@ public class GraphCanvas extends JPanel {
 
     public void setCmpText(String cmpText) {
         this.cmpText = cmpText;
+    }
+
+    public void setParametersText(String paramText) {
+        this.parametersText = paramText;
     }
 
     private void paintBaseGraph(Graphics g) {
