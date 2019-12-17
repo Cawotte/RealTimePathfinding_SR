@@ -40,7 +40,7 @@ public class AStar implements IRealTimePathfinding {
         //initialize new path
         this.path = new Path<>();
 
-        log.startLogging(getPathWalked());
+        log.startLogging(toString(), getPathWalked());
 
         if (start.equals(goal)) {
             log.finishLogging(path);

@@ -114,7 +114,7 @@ public class PathGenerator {
     public String getCumulatedLogText() {
         String str = "";
         for (IRealTimePathfinding algorithm : cumulatedLogTargets) {
-            str = str.concat(algorithm.toString() + "\n\n" + algorithm.getLog().toString()) + "\n\n";
+            str = str.concat(algorithm.getLog().toString()) + "\n\n";
         }
         return str;
     }

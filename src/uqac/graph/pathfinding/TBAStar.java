@@ -83,7 +83,7 @@ public class TBAStar implements IRealTimePathfinding {
 
         openSet.add(this.start);
 
-        log.startLogging(this.pathWalked);
+        log.startLogging(toString(), this.pathWalked);
 
     }
 

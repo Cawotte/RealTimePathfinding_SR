@@ -1,7 +1,9 @@
 package uqac.graph.pathfinding.logs;
 
+import javafx.util.Pair;
 import uqac.graph.pathfinding.Path;
 
+import java.rmi.Remote;
 import java.util.ArrayList;
 
 public class LogPathfinding {
@@ -13,6 +15,8 @@ public class LogPathfinding {
     private ArrayList<Long> stepTime = new ArrayList<>();
     private ArrayList<Long> stepMemory = new ArrayList<>();
 
+    //algo
+    private String algorithmName = "";
     //Time
     private long startingTime;
     private long cumulatedTimeElapsed;
@@ -28,7 +32,7 @@ public class LogPathfinding {
 
     private Path path;
 
-    public void startLogging(Path path) {
+    public void startLogging(String algorithmName, Path path) {
         startingTime = System.currentTimeMillis();
         startingMemory = getUsedMemory();
 
@@ -45,6 +49,7 @@ public class LogPathfinding {
         this.longestStep = Long.MIN_VALUE;
         this.averageStep = 0L;
 
+        this.algorithmName = algorithmName;
         this.path = path;
 
     }
@@ -89,9 +94,46 @@ public class LogPathfinding {
         Runtime.getRuntime().gc();
     }
 
+    static public String logsComparison(ArrayList<LogPathfinding> logs) {
+
+        LogPathfinding firstLog = logs.get(0);
+        Pair<String, Long> bestAverage = new Pair<String, Long>(firstLog.algorithmName, firstLog.averageStep);
+        Pair<String, Long> bestTime = new Pair<String, Long>(firstLog.algorithmName, firstLog.totalTime);
+        Pair<String, Long> bestMemory = new Pair<String, Long>(firstLog.algorithmName, firstLog.maxMemory);
+        Pair<String, Float> bestPath = new Pair<String, Float>(firstLog.algorithmName, firstLog.path.getCost());
+
+        for (LogPathfinding log : logs) {
+
+            //Fastest average
+            if (log.averageStep < bestAverage.getValue()) {
+                bestAverage = new Pair<>(log.algorithmName, log.averageStep);
+            }
+
+            //Fastest Computing
+            if (log.totalTime < bestTime.getValue()) {
+                bestTime = new Pair<>(log.algorithmName, log.totalTime);
+            }
+
+            //Smallest Memory Usage
+            if (log.maxMemory < bestMemory.getValue()) {
+                bestMemory = new Pair<>(log.algorithmName, log.maxMemory);
+            }
+
+            //Best Path
+            if (log.path.getCost() < bestPath.getValue()) {
+                bestPath = new Pair<>(log.algorithmName, log.path.getCost());
+            }
+        }
+
+        //We found the best of each algorithms, now we build a String with the results
+
+        return "";
+    }
+
     @Override
     public String toString() {
         String str = "";
+        str += "  " + algorithmName + "\n\n";
         str += "Iterations :    "+stepTime.size() + "\n";
         if (path != null) {
             //str += "\n";
@@ -109,15 +151,6 @@ public class LogPathfinding {
         return str;
     }
 
-    private static String fixedLengthString(String string, int length) {
-
-
-        char fill = ' ';
-
-        return new String(new char[length - string.length()]).replace('\0', fill) + string;
-
-        //return String.format("%1$"+length+ "s", string);
-    }
 
     private long getUsedMemory() {
         Runtime rt = Runtime.getRuntime();
