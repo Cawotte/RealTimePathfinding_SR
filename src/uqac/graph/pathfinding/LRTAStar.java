@@ -55,7 +55,7 @@ public class LRTAStar implements IRealTimePathfinding{
         this.pathWalked = new Path<>();
         this.pathWalked.addNodeAtBeginning(start);
 
-        log.startLogging();
+        log.startLogging(this.pathWalked);
     }
 
     @Override

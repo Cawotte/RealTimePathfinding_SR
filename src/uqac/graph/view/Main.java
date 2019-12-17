@@ -83,7 +83,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
         //DATA
 
-        //Calcule le ratio H*L requis pour avoir un graph équidistant en fonction du nombre total de nodes
+        //Calcule le ratio H*L requis pour avoir un graph au noeuds équidistant quelque soit le nombre de node et ratio d'écran.
         float aspectRatio = ((float)CANVAS_WIDTH - GRAPH_OFFSET.x * 2) / ((float)CANVAS_HEIGHT - GRAPH_OFFSET.y * 2);
 
         int nbNodesY = (int)Math.sqrt(NB_NODES / aspectRatio);
@@ -156,6 +156,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     private void updateAndRepaintGraph() {
 
         canvas.updateWithAlgorithm(pathfindingGenerator.getPathfindingAlgorithm());
+        canvas.setLogText(pathfindingGenerator.getCumulatedLogText());
         this.repaint();
     }
 
@@ -203,7 +204,5 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseMoved(MouseEvent mouseEvent) {
-        canvas.setPosPointer(mouseEvent.getX(), mouseEvent.getY());
-        this.repaint();
     }
 }

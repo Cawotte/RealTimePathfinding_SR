@@ -28,7 +28,7 @@ public class LogPathfinding {
 
     private Path path;
 
-    public void startLogging() {
+    public void startLogging(Path path) {
         startingTime = System.currentTimeMillis();
         startingMemory = getUsedMemory();
 
@@ -44,6 +44,8 @@ public class LogPathfinding {
         this.shortestStep = Long.MAX_VALUE;
         this.longestStep = Long.MIN_VALUE;
         this.averageStep = 0L;
+
+        this.path = path;
 
     }
 
@@ -61,6 +63,11 @@ public class LogPathfinding {
             shortestStep = timeElapsed;
         }
 
+        //Total time
+        totalTime = System.currentTimeMillis() - startingTime;
+        //Average
+        this.averageStep = totalTime / stepTime.size();
+
         //Memory usage since beginning
         long memoryUsage = getUsedMemory() - startingMemory;
         stepMemory.add(memoryUsage);
@@ -76,11 +83,7 @@ public class LogPathfinding {
         this.path = path;
 
         //Get mean steps
-        this.averageStep = 0;
-        for (int i = 0; i < stepTime.size(); i++) {
-            this.averageStep += stepTime.get(i);
-        }
-        this.averageStep = this.averageStep / stepTime.size();
+        this.averageStep = totalTime / stepTime.size();
 
         //Garbage collection at end of logging
         Runtime.getRuntime().gc();
@@ -89,13 +92,31 @@ public class LogPathfinding {
     @Override
     public String toString() {
         String str = "";
-        str += "Iterations : " + stepTime.size() + "\n";
-        str += "Path Lenght : " + path.getSize() + ", Cost : " + path.getCost() + "\n";
-        str += "Total Time : " + totalTime + "ms\n";
-        str += "Average Step : " + averageStep + "ms, Longest Step : " + longestStep + "ms, Shortest Step : " + shortestStep + "ms\n";
-        str += "Memory Usage : " + maxMemory + " bytes / " + bytesToMegabytes(maxMemory) + " Mb\n";
+        str += "Iterations :    "+stepTime.size() + "\n";
+        if (path != null) {
+            //str += "\n";
+            str += "Path Lenght :   " + path.getSize() + "\n";
+            str += "Path Cost :     " + String.format("%.02f",path.getCost()) + "\n";
+        }
+        //str += "\n";
+        str += "Total Time :    " + totalTime + "ms\n";
+        str += "Average Step :  " + averageStep + "ms\n" +
+                "Longest Step :  " + longestStep + "ms\n" +
+                "Shortest Step : " + shortestStep + "ms\n";
+        //str += "\n";
+        str += "Memory Usage :  " + bytesToMegabytes(maxMemory) + " Mb\n";
 
         return str;
+    }
+
+    private static String fixedLengthString(String string, int length) {
+
+
+        char fill = ' ';
+
+        return new String(new char[length - string.length()]).replace('\0', fill) + string;
+
+        //return String.format("%1$"+length+ "s", string);
     }
 
     private long getUsedMemory() {

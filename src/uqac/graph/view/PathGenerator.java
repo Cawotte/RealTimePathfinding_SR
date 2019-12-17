@@ -18,10 +18,13 @@ public class PathGenerator {
     private ArrayList<IRealTimePathfinding> pathAlgorithms;
     private IRealTimePathfinding currentlyUsedAlgorithm;
 
-    private long minTimePathfinding;
+    private ArrayList<IRealTimePathfinding> cumulatedLogTargets = new ArrayList<>();
 
+    private long minTimePathfinding;
     private boolean manualContinue;
+
     private Scanner sc = new Scanner(System.in);
+
     private int delay = 2;
 
     public Runnable notifyObserver;
@@ -52,6 +55,8 @@ public class PathGenerator {
         this.goal = goal;
         //this.current = start;
 
+        cumulatedLogTargets = new ArrayList<>();
+
         System.out.println("START NEW PATH CALCULATION\n");
         //For each registered algorithms
         for (IRealTimePathfinding algorithm : pathAlgorithms) {
@@ -60,6 +65,7 @@ public class PathGenerator {
 
 
             currentlyUsedAlgorithm = algorithm;
+            cumulatedLogTargets.add(currentlyUsedAlgorithm);
 
             System.out.println(algorithm.toString());
 
@@ -103,6 +109,14 @@ public class PathGenerator {
 
     public IRealTimePathfinding getPathfindingAlgorithm() {
         return currentlyUsedAlgorithm;
+    }
+
+    public String getCumulatedLogText() {
+        String str = "";
+        for (IRealTimePathfinding algorithm : cumulatedLogTargets) {
+            str = str.concat(algorithm.toString() + "\n\n" + algorithm.getLog().toString()) + "\n\n";
+        }
+        return str;
     }
 
     private void waitKeypressToContinue() {

@@ -8,6 +8,9 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/***
+ * Classe qui se charge de lire et afficher le Graph dans la fênetre graphique.
+ */
 public class GraphCanvas extends JPanel {
 
 
@@ -28,20 +31,21 @@ public class GraphCanvas extends JPanel {
     private int width;
     private int height;
 
+    //Draw text
+    private final int yLineSpacing = 5;
+
     //Graph bounds (in which it has to be drawn)
     private Vector2 minBounds;
     private Vector2 maxBounds;
 
-    //Visited nodes of the graph
-    private Collection<? extends INode> visited = null;
+    //Infos sur le graph
     private boolean displayVisited;
+    private Collection<? extends INode> visited = null;
     private INode start = null;
     private INode goal = null;
     private INode current = null;
     private Path path;
-    private String algorithmName = "";
-
-    private Circle pointer = new Circle(0, 0, 5, Color.red);
+    private String logText = "";
 
 
     public GraphCanvas(WeightedGraph graph, int width, int height, int offsetWidth, int offsetHeight, boolean displayVisited) {
@@ -61,13 +65,11 @@ public class GraphCanvas extends JPanel {
 
         paintBaseGraph(g);
 
-        paintName(g);
-        //pointer.draw(g);
+        writeText(g, logText);
 
         if (displayVisited)
             paintVisited(g);
 
-        //drawLineToClosestNode(g);
 
         if (path != null) {
             paintPath(g, path);
@@ -84,7 +86,11 @@ public class GraphCanvas extends JPanel {
         this.current = algorithm.getCurrent();
         this.start = algorithm.getStart();
         this.goal = algorithm.getCurrent();
-        this.algorithmName = algorithm.toString();
+        //this.logText = algorithm.toString() + "\n\n" + algorithm.getLog().toString();
+    }
+
+    public void setLogText(String logText) {
+        this.logText = logText;
     }
 
     private void paintBaseGraph(Graphics g) {
@@ -97,8 +103,17 @@ public class GraphCanvas extends JPanel {
         drawLink(g);
     }
 
-    private void paintName(Graphics g) {
-        g.drawString(algorithmName, 25, 25);
+    private void writeText(Graphics g, String text) {
+
+        Font myFont = new Font (Font.MONOSPACED, Font.PLAIN, 12);
+        g.setFont (myFont);
+
+        int x = 10;
+        int y = 10;
+        for (String line : text.split("\n")) {
+            g.drawString(line, x, y += g.getFontMetrics().getHeight());
+        }
+
     }
 
     private void paintVisited(Graphics g) {
@@ -155,16 +170,6 @@ public class GraphCanvas extends JPanel {
         g.drawLine( (int)aGraph.x, (int)aGraph.y, (int)bGraph.x, (int)bGraph.y);
     }
 
-    /*
-    private Node drawLineToClosestNode(Graphics g) {
-
-
-        Node closestNode = graph.getClosestNode(pointer.center);
-        float distance = Vector2.Distance(pointer.center, closestNode.position);
-        drawLine(g, pointer.center, closestNode.position, colorShortDistance);
-        return closestNode;
-    } */
-
     private void drawCircle(Graphics g, Vector2 center, int radius, Color color) {
         Vector2 centerGraph = posGraphToCanvas(center);
         g.setColor(color);
@@ -183,12 +188,6 @@ public class GraphCanvas extends JPanel {
 
     private static float lerp(float a, float b, float f) {
         return a + f * (b - a);
-    }
-
-
-    public void setPosPointer(int x, int y) {
-        pointer.center.x = x;
-        pointer.center.y = y;
     }
 
 }
