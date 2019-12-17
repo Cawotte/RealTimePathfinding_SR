@@ -6,6 +6,7 @@ import uqac.graph.WeightedGraph;
 import uqac.graph.pathfinding.IRealTimePathfinding;
 import uqac.graph.pathfinding.Path;
 import uqac.graph.pathfinding.PathNotFoundException;
+import uqac.graph.pathfinding.logs.LogPathfinding;
 
 import java.lang.reflect.Array;
 import java.text.DecimalFormat;
@@ -19,6 +20,7 @@ public class PathGenerator {
     private IRealTimePathfinding currentlyUsedAlgorithm;
 
     private ArrayList<IRealTimePathfinding> cumulatedLogTargets = new ArrayList<>();
+    private String comparisonText = "";
 
     private long minTimePathfinding;
     private boolean manualContinue;
@@ -95,6 +97,7 @@ public class PathGenerator {
                 }
             }
 
+            comparisonText =getCumulatedComparisonText();
             notifyObserver.run();
 
             System.out.println(algorithm.getLog().toString());
@@ -117,6 +120,17 @@ public class PathGenerator {
             str = str.concat(algorithm.getLog().toString()) + "\n\n";
         }
         return str;
+    }
+
+    public String getComparisonText() {
+        return comparisonText;
+    }
+    private String getCumulatedComparisonText() {
+        ArrayList<LogPathfinding> logs = new ArrayList<>();
+        for (IRealTimePathfinding algorithm : cumulatedLogTargets) {
+            logs.add(algorithm.getLog());
+        }
+        return LogPathfinding.compareLogToString(logs);
     }
 
     private void waitKeypressToContinue() {

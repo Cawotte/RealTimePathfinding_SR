@@ -94,9 +94,17 @@ public class LogPathfinding {
         Runtime.getRuntime().gc();
     }
 
-    static public String logsComparison(ArrayList<LogPathfinding> logs) {
+    static public String compareLogToString(ArrayList<LogPathfinding> logs) {
+
+        if (logs == null || logs.isEmpty()) {
+            return "";
+        }
 
         LogPathfinding firstLog = logs.get(0);
+        int nbEqualAverage = 0;
+        int nbEqualTime = 0;
+        int nbEqualMemory = 0;
+        int nbEqualPath = 0;
         Pair<String, Long> bestAverage = new Pair<String, Long>(firstLog.algorithmName, firstLog.averageStep);
         Pair<String, Long> bestTime = new Pair<String, Long>(firstLog.algorithmName, firstLog.totalTime);
         Pair<String, Long> bestMemory = new Pair<String, Long>(firstLog.algorithmName, firstLog.maxMemory);
@@ -108,26 +116,75 @@ public class LogPathfinding {
             if (log.averageStep < bestAverage.getValue()) {
                 bestAverage = new Pair<>(log.algorithmName, log.averageStep);
             }
+            else if (log.averageStep == bestAverage.getValue()) {
+                nbEqualAverage++;
+            }
 
             //Fastest Computing
             if (log.totalTime < bestTime.getValue()) {
                 bestTime = new Pair<>(log.algorithmName, log.totalTime);
+            }
+            else if (log.totalTime == bestTime.getValue()) {
+                nbEqualTime++;
             }
 
             //Smallest Memory Usage
             if (log.maxMemory < bestMemory.getValue()) {
                 bestMemory = new Pair<>(log.algorithmName, log.maxMemory);
             }
+            else if (log.maxMemory == bestMemory.getValue()) {
+                nbEqualMemory++;
+            }
 
             //Best Path
             if (log.path.getCost() < bestPath.getValue()) {
                 bestPath = new Pair<>(log.algorithmName, log.path.getCost());
             }
+            else if (log.path.getCost() == bestPath.getValue()) {
+                nbEqualPath++;
+            }
         }
 
         //We found the best of each algorithms, now we build a String with the results
+        String cmp = "ALGORITHMS COMPARISON\n\n";
+        String tab = "   ";
 
-        return "";
+        //Best Path
+        cmp = cmp.concat("Best Path :\n");
+        //Equality
+        if (nbEqualPath == logs.size()) {
+            bestPath = new Pair<>("NONE", bestPath.getValue());
+        }
+        //Has best
+        cmp = cmp.concat(tab + bestPath.getKey() + "\n" + tab +  String.format("%.02f",bestPath.getValue()) + "\n");
+
+        //Best Average
+        cmp = cmp.concat("Best Average :\n");
+        //Equality
+        if (nbEqualAverage == logs.size()) {
+            bestAverage = new Pair<>("NONE", bestAverage.getValue());
+        }
+        //Has best
+        cmp = cmp.concat(tab + bestAverage.getKey() + "\n" + tab +  bestAverage.getValue() + "ms\n");
+
+
+        //Best Memory
+        cmp = cmp.concat("Best Memory Usage :\n");
+        //Equality
+        if (nbEqualMemory == logs.size()) {
+            bestMemory = new Pair<>("NONE", bestMemory.getValue());
+        }
+        cmp = cmp.concat(tab + bestMemory.getKey() + "\n" + tab +  bytesToMegabytes(bestMemory.getValue()) + "MB\n");
+
+        //Best Time
+        cmp = cmp.concat("Best Total Time :\n");
+        //Equality
+        if (nbEqualTime == logs.size()) {
+            bestTime = new Pair<>("NONE", bestTime.getValue());
+        }
+        cmp = cmp.concat(tab + bestTime.getKey() + "\n" + tab +  bestTime.getValue() + "ms\n");
+
+        return cmp;
     }
 
     @Override

@@ -32,7 +32,8 @@ public class GraphCanvas extends JPanel {
     private int height;
 
     //Draw text
-    private final int yLineSpacing = 5;
+    private int xText = 10;
+    private int yText = 10;
 
     //Graph bounds (in which it has to be drawn)
     private Vector2 minBounds;
@@ -46,6 +47,7 @@ public class GraphCanvas extends JPanel {
     private INode current = null;
     private Path path;
     private String logText = "";
+    private String cmpText = "";
 
 
     public GraphCanvas(WeightedGraph graph, int width, int height, int offsetWidth, int offsetHeight, boolean displayVisited) {
@@ -58,6 +60,7 @@ public class GraphCanvas extends JPanel {
         this.maxBounds = new Vector2(width - offsetWidth, height - offsetHeight);
 
 
+
     }
 
     @Override
@@ -65,7 +68,11 @@ public class GraphCanvas extends JPanel {
 
         paintBaseGraph(g);
 
-        writeText(g, logText);
+        //Write algorithms logs
+        writeText(g, logText, xText, yText);
+
+        //Write parameters and algo comparisons
+        writeText(g, cmpText, (int)this.maxBounds.x + xText, yText);
 
         if (displayVisited)
             paintVisited(g);
@@ -86,11 +93,14 @@ public class GraphCanvas extends JPanel {
         this.current = algorithm.getCurrent();
         this.start = algorithm.getStart();
         this.goal = algorithm.getCurrent();
-        //this.logText = algorithm.toString() + "\n\n" + algorithm.getLog().toString();
     }
 
     public void setLogText(String logText) {
         this.logText = logText;
+    }
+
+    public void setCmpText(String cmpText) {
+        this.cmpText = cmpText;
     }
 
     private void paintBaseGraph(Graphics g) {
@@ -103,18 +113,19 @@ public class GraphCanvas extends JPanel {
         drawLink(g);
     }
 
-    private void writeText(Graphics g, String text) {
+    private void writeText(Graphics g, String text, int xPos, int yPos) {
 
         Font myFont = new Font (Font.MONOSPACED, Font.PLAIN, 12);
         g.setFont (myFont);
 
-        int x = 10;
-        int y = 10;
+        int x = xPos;
+        int y = yPos;
         for (String line : text.split("\n")) {
             g.drawString(line, x, y += g.getFontMetrics().getHeight());
         }
 
     }
+
 
     private void paintVisited(Graphics g) {
         if (visited == null)

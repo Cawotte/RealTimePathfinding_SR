@@ -157,6 +157,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
         canvas.updateWithAlgorithm(pathfindingGenerator.getPathfindingAlgorithm());
         canvas.setLogText(pathfindingGenerator.getCumulatedLogText());
+        canvas.setCmpText(pathfindingGenerator.getComparisonText());
         this.repaint();
     }
 
