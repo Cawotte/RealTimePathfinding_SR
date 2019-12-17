@@ -8,13 +8,10 @@ import uqac.graph.pathfinding.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.function.BiFunction;
 
-public class Main extends JFrame implements MouseListener, MouseMotionListener {
+public class Main extends JFrame {
 
 
     // Define constants
@@ -142,8 +139,6 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
             cp.add(canvas);
             // or "setContentPane(canvas);"
 
-            addMouseListener( this );
-            addMouseMotionListener( this );
 
             setDefaultCloseOperation(EXIT_ON_CLOSE);   // Handle the CLOSE button
             pack();              // Either pack() the components; or setSize()
@@ -214,39 +209,5 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
                 new Main(); // Let the constructor do the job
             }
         });
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent mouseEvent) {
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent mouseEvent) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent mouseEvent) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent mouseEvent) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent mouseEvent) {
-
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent mouseEvent) {
-
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent mouseEvent) {
     }
 }
