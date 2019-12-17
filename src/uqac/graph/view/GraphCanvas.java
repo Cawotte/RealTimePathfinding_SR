@@ -50,6 +50,9 @@ public class GraphCanvas extends JPanel {
     private String cmpText = "";
     private String parametersText = "";
 
+    private String warningTop = "yeeeeeees";
+    private String warningBottom = "noooooooo";
+
 
     public GraphCanvas(WeightedGraph graph, int width, int height, int offsetWidth, int offsetHeight, boolean displayVisited) {
         this.graph = graph;
@@ -57,8 +60,8 @@ public class GraphCanvas extends JPanel {
         this.height = height;
         this.displayVisited = displayVisited;
 
-        this.minBounds = new Vector2(offsetWidth, offsetHeight);
-        this.maxBounds = new Vector2(width - offsetWidth, height - offsetHeight);
+        this.minBounds = new Vector2(offsetWidth, 10);
+        this.maxBounds = new Vector2(width - offsetWidth, height - offsetHeight * 2);
 
 
 
@@ -75,6 +78,10 @@ public class GraphCanvas extends JPanel {
         //Write parameters and algo comparisons
         String totalStr = parametersText + "\n" + cmpText;
         writeText(g, totalStr, (int)this.maxBounds.x + xText, yText);
+
+        //Warnings
+        writeText(g, warningTop + "\n" + warningBottom, (int)this.minBounds.x + xText, (int)this.maxBounds.y);
+        //writeText(g, warningBottom, (int)this.minBounds.x + xText, (int)this.maxBounds.y);
 
         if (displayVisited)
             paintVisited(g);
@@ -107,6 +114,14 @@ public class GraphCanvas extends JPanel {
 
     public void setParametersText(String paramText) {
         this.parametersText = paramText;
+    }
+
+    public void setTopWarning(String topWarning) {
+        this.warningTop = topWarning;
+    }
+
+    public void setBottomWarning(String bottomWarning) {
+        this.warningBottom = bottomWarning;
     }
 
     private void paintBaseGraph(Graphics g) {

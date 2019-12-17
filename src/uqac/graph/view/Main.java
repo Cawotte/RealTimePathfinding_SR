@@ -22,7 +22,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     //GRAPH CONSTANT
 
     //Nombre de noeuds du graph
-    static final int NB_NODES = 100000;
+    static final int NB_NODES = 1000;
 
     //Offset (x,y) aléatoire sur lesquels chaque point de la grille seronts déplacés
     static final Vector2 RAND_OFFSET = new Vector2(0.2f, 0.2f);
@@ -52,25 +52,25 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
     static final int CANVAS_WIDTH  = 960;
     static final int CANVAS_HEIGHT = 600;
     //Taille de la bordure vide de la fenetre graphique
-    static final Vector2 GRAPH_OFFSET = new Vector2(200, 10);
+    static final Vector2 GRAPH_OFFSET = new Vector2(200, 25);
 
     //Nombre de milliseconde minimal par étape de l'algorithme.
     //Mettre 0 pour la performance, et entre 10 et 100 pour voir le déroulement de l'algo avec l'affichage
-    static final int MIN_LENGHT_STEP = 0;
+    static final int MIN_LENGHT_STEP = 100;
 
     //HEURISTIC
     //fonction heuristic utilisés, deux disponibles dans Heuristics : euclidianDistance et manhattanDistance
     static final BiFunction<Node, Node, Float> heuristics = Heuristics::euclidianDistance;
 
     //PATHFINDING TAB* PARAMETERS
-    static final int MAX_STEP_EXPANSION = 100;
-    static final int MAX_STEP_BACKTRACKING = 500;
+    static final int MAX_STEP_EXPANSION = 10;
+    static final int MAX_STEP_BACKTRACKING = 50;
 
     //LRTA* PARAMETERS
     static final int LOOKAHEAD = 5;
 
-    private String parametersString = "";
 
+    private String parametersString = "";
     private GraphCanvas canvas;
 
     private WeightedGraph graph;
@@ -89,7 +89,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
         int nbNodesY = (int)Math.sqrt(NB_NODES / aspectRatio);
         int nbNodesX = (int) (nbNodesY * aspectRatio);
 
-        System.out.println("Graph Size : (" + nbNodesX + ", " + nbNodesY + ") = " + nbNodesX * nbNodesY + " nodes.");
+        //System.out.println("Graph Size : (" + nbNodesX + ", " + nbNodesY + ") = " + nbNodesX * nbNodesY + " nodes.");
 
         //Initialise le graph
        WeightedGraph graphInit = GraphFactory.generateGridGraph(
@@ -107,6 +107,8 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
 
 
 
+        parametersString = parametersToString(nbNodesX, nbNodesY);
+
         if (GRAPHICS_ENABLED) {
 
             /// SETUP GRAPH CANVAS
@@ -121,7 +123,15 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
                     DISPLAY_VISITED);
 
 
-            /// SETUP WINDOWS
+            canvas.setParametersText(parametersString);
+
+            if (DISPLAY_VISITED) {
+                canvas.setBottomWarning("WARNING : Displaying Visited Nodes may cause errors on very large graph.");
+            }
+            if (MIN_LENGHT_STEP != 0) {
+                canvas.setTopWarning("WARNING : MIN_LENGHT_STEP != 0. Better visualisation but wrong logs time.");
+
+            }
 
             // Construct the drawing canvas
             canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
@@ -147,8 +157,7 @@ public class Main extends JFrame implements MouseListener, MouseMotionListener {
             };
         }
 
-        parametersString = parametersToString(nbNodesX, nbNodesY);
-        canvas.setParametersText(parametersString);
+        System.out.println("\n\n" + parametersString);
 
         //Start generating random pathfinding
         pathfindingGenerator.scheduleNextTimer();

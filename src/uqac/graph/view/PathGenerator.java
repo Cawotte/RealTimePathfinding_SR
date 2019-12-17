@@ -59,17 +59,14 @@ public class PathGenerator {
 
         cumulatedLogTargets = new ArrayList<>();
 
-        System.out.println("START NEW PATH CALCULATION\n");
+        System.out.println("NEXT PATH COMPARISONS : \n");
         //For each registered algorithms
         for (IRealTimePathfinding algorithm : pathAlgorithms) {
 
             Runtime.getRuntime().gc();
 
-
             currentlyUsedAlgorithm = algorithm;
             cumulatedLogTargets.add(currentlyUsedAlgorithm);
-
-            System.out.println(algorithm.toString());
 
             algorithm.beginPathfinding(start, goal);
 
@@ -97,15 +94,14 @@ public class PathGenerator {
                 }
             }
 
-            comparisonText =getCumulatedComparisonText();
+            comparisonText = getCumulatedComparisonText();
             notifyObserver.run();
 
             System.out.println(algorithm.getLog().toString());
         }
 
-        comparePathsFound();
-
-        System.out.println("\nEND PATH CALCULATIONS\n");
+        //print comparisons
+        System.out.println(getCumulatedComparisonText());
 
     }
 
@@ -139,18 +135,6 @@ public class PathGenerator {
     }
 
 
-    private void comparePathsFound() {
-
-        Path optimalPath = pathAlgorithms.get(0).getPathWalked();
-
-        DecimalFormat df = new DecimalFormat("##.##%");
-
-        System.out.println("Comparing different algorithms Suboptimality : ");
-        for (IRealTimePathfinding algorithm : pathAlgorithms) {
-            float suboptimality = algorithm.getPathWalked().compareSuboptimality(optimalPath);
-            System.out.println("Suboptimality : " + df.format(suboptimality) + " - " + algorithm.toString() );
-        }
-    }
 
     class TaskRandomPath extends TimerTask {
 
