@@ -1,9 +1,8 @@
 package uqac.graph.pathfinding.logs;
 
-import javafx.util.Pair;
 import uqac.graph.pathfinding.Path;
+import uqac.graph.utils.Pair;
 
-import java.rmi.Remote;
 import java.util.ArrayList;
 
 public class LogPathfinding {

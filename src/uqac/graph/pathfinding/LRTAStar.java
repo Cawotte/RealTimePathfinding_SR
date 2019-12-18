@@ -1,12 +1,10 @@
 package uqac.graph.pathfinding;
 
-import javafx.css.converter.DeriveColorConverter;
 import uqac.graph.INode;
 import uqac.graph.Node;
 import uqac.graph.Vector2;
 import uqac.graph.pathfinding.logs.LogPathfinding;
 
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.BiFunction;
 
