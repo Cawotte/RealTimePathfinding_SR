@@ -1,6 +1,6 @@
-package uqac.graph.pathfinding.logs;
+package uqac.graph.pathfinding;
 
-import uqac.graph.pathfinding.Path;
+import uqac.graph.Path;
 import uqac.graph.utils.Pair;
 
 import java.util.ArrayList;

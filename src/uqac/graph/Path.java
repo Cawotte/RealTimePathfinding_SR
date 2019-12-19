@@ -1,6 +1,4 @@
-package uqac.graph.pathfinding;
-
-import uqac.graph.INode;
+package uqac.graph;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -128,7 +126,7 @@ public class Path<T extends INode> {
 
     //endregion
 
-    class PathIterator<T extends INode> implements Iterator<T> {
+    public class PathIterator<T extends INode> implements Iterator<T> {
 
         private int index;
         private T current;

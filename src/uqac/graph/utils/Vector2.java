@@ -1,4 +1,4 @@
-package uqac.graph;
+package uqac.graph.utils;
 
 import java.util.Objects;
 

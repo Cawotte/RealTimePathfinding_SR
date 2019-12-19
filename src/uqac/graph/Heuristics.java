@@ -1,7 +1,6 @@
-package uqac.graph.pathfinding;
+package uqac.graph;
 
-import uqac.graph.Node;
-import uqac.graph.Vector2;
+import uqac.graph.utils.Vector2;
 
 
 public class Heuristics {
