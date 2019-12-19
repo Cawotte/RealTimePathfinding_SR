@@ -20,9 +20,11 @@ public class GraphCanvas extends JPanel {
     private final Color colorGraph = Color.gray;
 
     private final Color colorVisited = Color.orange;
-    private final Color colorStartNode = Color.blue;
-    private final Color colorGoalNode = Color.orange;
     private final Color colorCurrentNode = Color.green;
+
+    private final Color colorStartNode = Color.blue;
+    private final Color colorGoalNode = Color.cyan;
+
 
 
     private WeightedGraph graph;
@@ -101,7 +103,7 @@ public class GraphCanvas extends JPanel {
         this.visited = algorithm.getVisited();
         this.current = algorithm.getCurrent();
         this.start = algorithm.getStart();
-        this.goal = algorithm.getCurrent();
+        this.goal = algorithm.getGoal();
     }
 
     public void setLogText(String logText) {
@@ -158,14 +160,14 @@ public class GraphCanvas extends JPanel {
     }
 
     private void paintStartGoalCurrent(Graphics g) {
-        if (current != null) {
-            drawCircle(g, current.getPosition(), nodeRadius, colorCurrentNode);
-        }
         if (start != null) {
             drawCircle(g, start.getPosition(), nodeRadius, colorStartNode);
         }
         if (goal != null) {
             drawCircle(g, goal.getPosition(), nodeRadius, colorGoalNode);
+        }
+        if (current != null) {
+            drawCircle(g, current.getPosition(), nodeRadius, colorCurrentNode);
         }
     }
 

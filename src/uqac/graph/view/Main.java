@@ -14,17 +14,15 @@ import java.util.function.BiFunction;
 public class Main extends JFrame {
 
 
-    // Define constants
-
-    //GRAPH CONSTANT
+    //PARAMETRES DU GRAPH ---------------
 
     //Nombre de noeuds du graph
     static final int NB_NODES = 1000;
 
-    //Offset (x,y) aléatoire sur lesquels chaque point de la grille seronts déplacés
-    static final Vector2 RAND_OFFSET = new Vector2(0.2f, 0.2f);
+    //Offset (x,y) aléatoire sur lesquels chaque point de la grille seronts translatés
+    static final Vector2 RAND_OFFSET = new Vector2(0.4f, 0.4f);
 
-    //Connection diagonale entre les noeuds
+    //Connection diagonale entre les noeuds?
     static final boolean HAS_DIAGONALS = true;
 
     //Probabilité que chaque noeud disparaissent après génération du Graph,
@@ -32,7 +30,7 @@ public class Main extends JFrame {
     //0.5 = La moitié des connections disparaissent, donnant beaucoup d'obstacles.
     static final float PROBABILITY_DISABLE_EDGE = 0.3f;
 
-    //CANVAS GRAPH CONSTANT
+    //PARAMETRE DE LA FENETRE GRAPHIQUE ------------------
 
     //Activer/Désactiver l'affichage graphique, activer pour suivre l'exécution, mais à désactiver pour de vrai évaluation de performances
     //sur de grand graph
@@ -45,26 +43,34 @@ public class Main extends JFrame {
     //Si vrai attend une entrée utilisateur avant chaque exécution, si faux continue automatiquement le calcul de nouveaux chemins.
     static final boolean MANUAL_CONTINUE = false;
 
-    //Taille de la fenetre graphique
+    //Taille de la fenetre graphique en pixels
     static final int CANVAS_WIDTH  = 960;
     static final int CANVAS_HEIGHT = 600;
-    //Taille de la bordure vide de la fenetre graphique
+
+    //Taille de la bordure vide (sans graph) de la fenetre graphique
     static final Vector2 GRAPH_OFFSET = new Vector2(200, 25);
+
+    //PARAMETRES DES ALGORITHMES -------------
 
     //Nombre de milliseconde minimal par étape de l'algorithme.
     //Mettre 0 pour la performance, et entre 10 et 100 pour voir le déroulement de l'algo avec l'affichage
     static final int MIN_LENGHT_STEP = 100;
 
-    //HEURISTIC
-    //fonction heuristic utilisés, deux disponibles dans Heuristics : euclidianDistance et manhattanDistance
-    static final BiFunction<Node, Node, Float> heuristics = Heuristics::euclidianDistance;
+    //Fonction heuristique utilisée, deux disponibles dans Heuristics : euclidianDistance et manhattanDistance
+    static final BiFunction<Node, Node, Float> HEURISTIC = Heuristics::euclidianDistance;
 
-    //PATHFINDING TAB* PARAMETERS
+    //PATHFINDING TAB* PARAMETERS ------------
+
+    //Nombre de noeuds visités par étape de TAB
     static final int MAX_STEP_EXPANSION = 10;
+    //Nombre de noeuds backtracké par étape de TAB (Généralement 5-10 fois plus que STEP_EXPANSION)
     static final int MAX_STEP_BACKTRACKING = 50;
 
-    //LRTA* PARAMETERS
+    //LRTA* PARAMETERS -----------------
+
+    //Profondeur de la recherche en largeur à chaque étape.
     static final int LOOKAHEAD = 5;
+
 
 
     private String parametersString = "";
@@ -78,7 +84,6 @@ public class Main extends JFrame {
 
     public Main() {
 
-        //DATA
 
         //Calcule le ratio H*L requis pour avoir un graph au noeuds équidistant quelque soit le nombre de node et ratio d'écran.
         float aspectRatio = ((float)CANVAS_WIDTH - GRAPH_OFFSET.x * 2) / ((float)CANVAS_HEIGHT - GRAPH_OFFSET.y * 2);
@@ -86,26 +91,23 @@ public class Main extends JFrame {
         int nbNodesY = (int)Math.sqrt(NB_NODES / aspectRatio);
         int nbNodesX = (int) (nbNodesY * aspectRatio);
 
-        //System.out.println("Graph Size : (" + nbNodesX + ", " + nbNodesY + ") = " + nbNodesX * nbNodesY + " nodes.");
 
         //Initialise le graph
-       WeightedGraph graphInit = GraphFactory.generateGridGraph(
+        WeightedGraph graphInit = GraphFactory.generateGridGraph(
                 nbNodesX, nbNodesY, RAND_OFFSET, HAS_DIAGONALS);
-        this.graph = graphInit;
-
         this.graph = GraphFactory.generateGridGraph2(graphInit, PROBABILITY_DISABLE_EDGE);
 
         // SETUP PATHFINDING
-        this.pathAlgorithms.add(new AStar(heuristics));
-        this.pathAlgorithms.add(new TBAStar(heuristics, MAX_STEP_EXPANSION, MAX_STEP_BACKTRACKING));
-        this.pathAlgorithms.add(new LRTAStar(heuristics, LOOKAHEAD));
+        this.pathAlgorithms.add(new AStar(HEURISTIC));
+        this.pathAlgorithms.add(new TBAStar(HEURISTIC, MAX_STEP_EXPANSION, MAX_STEP_BACKTRACKING));
+        this.pathAlgorithms.add(new LRTAStar(HEURISTIC, LOOKAHEAD));
 
         this.pathfindingGenerator = new PathGenerator(graph, pathAlgorithms, MIN_LENGHT_STEP, MANUAL_CONTINUE);
 
-
-
+        //Paramètre du graphe à afficher dans les logs.
         parametersString = parametersToString(nbNodesX, nbNodesY);
 
+        //Si fenetre graphique, l'initialiser
         if (GRAPHICS_ENABLED) {
 
             /// SETUP GRAPH CANVAS
@@ -148,7 +150,7 @@ public class Main extends JFrame {
         }
         else {
             this.pathfindingGenerator.notifyObserver = () -> {
-                //empty, il n'y a personne à notifier car plus de partie graphique
+                //vide, il n'y a personne à notifier s'il n'y a plus de partie graphique
             };
         }
 

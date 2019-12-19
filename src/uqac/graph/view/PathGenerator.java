@@ -1,15 +1,11 @@
 package uqac.graph.view;
 
-import uqac.graph.INode;
 import uqac.graph.Node;
 import uqac.graph.WeightedGraph;
 import uqac.graph.pathfinding.IRealTimePathfinding;
-import uqac.graph.pathfinding.Path;
 import uqac.graph.pathfinding.PathNotFoundException;
 import uqac.graph.pathfinding.logs.LogPathfinding;
 
-import java.lang.reflect.Array;
-import java.text.DecimalFormat;
 import java.util.*;
 
 public class PathGenerator {
@@ -27,6 +23,7 @@ public class PathGenerator {
 
     private Scanner sc = new Scanner(System.in);
 
+    //Temps entre calcul d'un chemin entre une nouvelle paire de noeuds
     private int delay = 2;
 
     public Runnable notifyObserver;
@@ -41,6 +38,9 @@ public class PathGenerator {
         this.manualContinue = manualContinue;
     }
 
+    /**
+     * Démarre une nouvelle comparaison après delay.
+     */
     public void scheduleNextTimer() {
 
         Timer timer = new Timer();
@@ -51,25 +51,36 @@ public class PathGenerator {
         timer.schedule(recurringPathfinding,delay * 1000);
     }
 
+    /**
+     * Commence une comparaison de chaque algorithmes entre le start/goal donné.
+     * @param start
+     * @param goal
+     * @param minStepTime
+     * @throws PathNotFoundException
+     */
     private void startRealTimePathfinding(Node start, Node goal, long minStepTime) throws PathNotFoundException {
 
         this.start = start;
         this.goal = goal;
-        //this.current = start;
 
         cumulatedLogTargets = new ArrayList<>();
+        comparisonText = "";
 
         System.out.println("NEXT PATH COMPARISONS : \n");
+
         //For each registered algorithms
         for (IRealTimePathfinding algorithm : pathAlgorithms) {
 
+            //Clean garbage
             Runtime.getRuntime().gc();
 
             currentlyUsedAlgorithm = algorithm;
             cumulatedLogTargets.add(currentlyUsedAlgorithm);
 
+            //Init le pathfinding
             algorithm.beginPathfinding(start, goal);
 
+            //Tant que c'est pas fini, next step.
             while (!algorithm.hasFinished()) {
 
                 //Used to force min step length

@@ -8,8 +8,6 @@ import uqac.graph.Vector2;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.PriorityQueue;
 import java.util.function.BiFunction;
 
 public class NodeAStar implements INode {

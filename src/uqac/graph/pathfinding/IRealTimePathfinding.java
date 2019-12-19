@@ -5,7 +5,6 @@ import uqac.graph.Node;
 import uqac.graph.pathfinding.logs.LogPathfinding;
 
 import java.util.Collection;
-import java.util.List;
 
 public interface IRealTimePathfinding {
 
