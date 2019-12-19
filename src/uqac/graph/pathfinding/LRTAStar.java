@@ -2,8 +2,8 @@ package uqac.graph.pathfinding;
 
 import uqac.graph.INode;
 import uqac.graph.Node;
-import uqac.graph.Vector2;
-import uqac.graph.pathfinding.logs.LogPathfinding;
+import uqac.graph.Path;
+import uqac.graph.utils.Vector2;
 
 import java.util.*;
 import java.util.function.BiFunction;

@@ -1,5 +1,7 @@
 package uqac.graph;
 
+import uqac.graph.utils.Vector2;
+
 import java.util.*;
 
 public class WeightedGraph {

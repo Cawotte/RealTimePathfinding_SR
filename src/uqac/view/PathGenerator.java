@@ -1,10 +1,10 @@
-package uqac.graph.view;
+package uqac.view;
 
 import uqac.graph.Node;
 import uqac.graph.WeightedGraph;
 import uqac.graph.pathfinding.IRealTimePathfinding;
 import uqac.graph.pathfinding.PathNotFoundException;
-import uqac.graph.pathfinding.logs.LogPathfinding;
+import uqac.graph.pathfinding.LogPathfinding;
 
 import java.util.*;
 

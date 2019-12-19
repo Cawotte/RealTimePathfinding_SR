@@ -1,7 +1,8 @@
-package uqac.graph.view;
+package uqac.view;
 
 import uqac.graph.*;
 import uqac.graph.pathfinding.*;
+import uqac.graph.utils.Vector2;
 
 import javax.swing.*;
 import java.awt.*;

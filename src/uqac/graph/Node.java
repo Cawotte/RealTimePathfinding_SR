@@ -2,6 +2,8 @@ package uqac.graph;
 
 
 
+import uqac.graph.utils.Vector2;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;

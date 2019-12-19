@@ -1,7 +1,6 @@
 package uqac.graph.pathfinding;
 
 import uqac.graph.*;
-import uqac.graph.pathfinding.logs.LogPathfinding;
 
 import java.util.*;
 import java.util.function.BiFunction;

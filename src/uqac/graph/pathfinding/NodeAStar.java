@@ -3,7 +3,7 @@ package uqac.graph.pathfinding;
 
 import uqac.graph.INode;
 import uqac.graph.Node;
-import uqac.graph.Vector2;
+import uqac.graph.utils.Vector2;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

@@ -1,10 +1,12 @@
-package uqac.graph.view;
+package uqac;
 
 
 import uqac.graph.*;
-import uqac.graph.Vector2;
+import uqac.graph.utils.Vector2;
 import uqac.graph.WeightedGraph;
 import uqac.graph.pathfinding.*;
+import uqac.view.GraphCanvas;
+import uqac.view.PathGenerator;
 
 import javax.swing.*;
 import java.awt.*;

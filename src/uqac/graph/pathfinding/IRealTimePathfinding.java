@@ -2,7 +2,7 @@ package uqac.graph.pathfinding;
 
 import uqac.graph.INode;
 import uqac.graph.Node;
-import uqac.graph.pathfinding.logs.LogPathfinding;
+import uqac.graph.Path;
 
 import java.util.Collection;
 
